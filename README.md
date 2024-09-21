@@ -5,7 +5,7 @@ Lorenzo Veschini, James Glazier, Rahuman Sheriff, Yi Jiang, Hana Dobrovolny, Mic
 
 This repository contains high-level description and schemas to create CPM simulations of Angiogenesis based on previous work published in:
 
-    **R Merks et al, PLOS Comp. Biol, 2008. "Contact-Inhibited Chemotaxis in De Novo and Sprouting Blood-Vessel Growth"**
+    R Merks et al, PLOS Comp. Biol, 2008. "Contact-Inhibited Chemotaxis in De Novo and Sprouting Blood-Vessel Growth"
 
 ## Background
 Angiogenesis is a fundamental patterning process in developmental biology. It shows a great deal of adaptability depending on initial and boundary conditions. This is fundamentally a model of in vitro angiogenesis in which we put endothelial cells into a cell culture context (either 2D as in most angio experiments or 3D). The analogy would be closest to the formation of peripheral capillaries during primary vasculogenesis. The model can also illustrate an abstraction of branching angiogenesis.
