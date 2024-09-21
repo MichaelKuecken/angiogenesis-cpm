@@ -1,2 +1,7 @@
-# angiogenesis-cpm
-This repository contains scripts and analysis tools for CompuCell3d and Morpheus focusing on a CPM model published in Roeland M. H. Merks et al.: Contact-Inhibited Chemotaxis in De Novo and Sprouting Blood-Vessel Growth, plos Computational Biology, 2008
+# Reference model of contact ihibited angiogenenesis
+
+This repository contains high-level description and schemas to create CPM simulations of Angiogenesis based on previous work published in:
+
+**R Merks et al, PLOS Comp. Biol, 2008. "Contact-Inhibited Chemotaxis in De Novo and Sprouting Blood-Vessel Growth"**
+
+Scripts and analysis tools to implement the simulation in CompuCell3d and Morpheus are included.
