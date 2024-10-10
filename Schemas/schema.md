@@ -48,7 +48,7 @@
     Chemotaxis of cells to chemical field
         CONTROL PARAMETERS:
             Strength of Response of Cell to Chemical
-            Nature of Response to Chemical Field (Linear, Logarithmic,...)
+            Linear Response to Chemical Field [].
             Contact inhibition of chemotaxis (Boolean)
 
     Secretion of chemical field by cells
