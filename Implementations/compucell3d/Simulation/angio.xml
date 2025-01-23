@@ -1,0 +1,178 @@
+<CompuCell3D Revision="0" Version="4.4.1">
+   
+   <Metadata>
+      
+      <!-- Basic properties simulation -->
+      <NumberOfProcessors>1</NumberOfProcessors>
+      <DebugOutputFrequency>50000</DebugOutputFrequency>
+      <!-- <NonParallelModule Name="Potts"/> -->
+   </Metadata>
+   
+   <Potts>
+      
+      <!-- Basic properties of CPM (GGH) algorithm -->
+      <Dimensions x="200" y="200" z="1"/>
+      <Steps>1000</Steps>
+      <Temperature>5.0</Temperature>
+      <NeighborOrder>1</NeighborOrder>
+      <Boundary_x>Periodic</Boundary_x>
+      <Boundary_y>Periodic</Boundary_y>
+   </Potts>
+   
+   
+   
+   <Plugin Name="CellType">
+      
+      <!-- Listing all cell types in the simulation -->
+      <CellType TypeId="0" TypeName="Medium"/>
+      <CellType TypeId="1" TypeName="EC"/>
+      <CellType TypeId="2" TypeName="Wall" Freeze=""/>
+   </Plugin>
+   
+   <Plugin Name="Volume">
+      <VolumeEnergyParameters CellType="EC" LambdaVolume="5.0" TargetVolume="50"/>
+   </Plugin>
+   
+   <Plugin Name="CenterOfMass">
+   </Plugin>
+   
+   <Plugin Name="NeighborTracker">
+   </Plugin>
+   
+   <Plugin Name="PixelTracker">
+   </Plugin>
+    
+    <!-- <Plugin Name="Connectivity"> -->
+        <!-- <Penalty>10000000</Penalty> -->
+   <!-- </Plugin> -->
+
+   
+   <Plugin Name="Contact">
+      <!-- Specification of adhesion energies -->
+      <!-- <Energy Type1="Medium" Type2="Medium">10.0</Energy> -->
+      <Energy Type1="Medium" Type2="EC">4.0</Energy>
+      <Energy Type1="EC" Type2="EC">1.0</Energy>
+      <Energy Type1="EC" Type2="Wall">10.0</Energy>
+      <NeighborOrder>4</NeighborOrder>
+   </Plugin>
+
+   <Plugin Name="Chemotaxis">
+      
+      <!-- You may repeat ChemicalField element for each chemical field declared in the PDE solvers -->
+      <!-- Specification of chemotaxis properties of select cell types. -->
+      <ChemicalField Name="VEGF">
+         <ChemotaxisByType ChemotactTowards="Medium"  Lambda="0.0" Type="EC" SaturationLinearCoef="0.1"/>
+         ranges: lambda 10-1000, SLC 0-0.5
+      </ChemicalField>
+   </Plugin>
+   
+   <Steppable Type="DiffusionSolverFE">
+      
+      <!-- Specification of PDE solvers -->
+      <DiffusionField Name="VEGF">
+         <DiffusionData>
+            <FieldName>VEGF</FieldName>
+            <GlobalDiffusionConstant>1.0</GlobalDiffusionConstant>
+            <GlobalDecayConstant>0.3</GlobalDecayConstant>
+            ranges: GDiC 1-10, GDeC 0.1-0.5 
+            <!-- Additional options are: -->
+            <!-- <InitialConcentrationExpression>x*y</InitialConcentrationExpression> -->
+            <!-- <ConcentrationFileName>INITIAL CONCENTRATION FIELD - typically a file with path Simulation/NAME_OF_THE_FILE.txt</ConcentrationFileName> -->
+            <!-- <DiffusionCoefficient CellType="EC">1.0</DiffusionCoefficient> -->
+            <DecayCoefficient CellType="EC">0.0</DecayCoefficient>
+         </DiffusionData>
+         <SecretionData>
+            <!-- When secretion is defined inside DissufionSolverFE all secretion constants are scaled automaticaly to account for the extra calls to the diffusion step when handling large diffusion constants -->
+            
+            <!-- Uniform secretion Definition -->
+            <Secretion Type="EC">0.3</Secretion>
+            ranges: Secr 0.05-0.5
+            <!-- <SecretionOnContact SecreteOnContactWith="EC" Type="EC">0.2</SecretionOnContact> -->
+            <!-- <ConstantConcentration Type="EC">0.1</ConstantConcentration> -->
+         </SecretionData>
+         <BoundaryConditions>
+            <Plane Axis="X">
+               <!-- <ConstantValue PlanePosition="Min" Value="10.0"/> -->
+               <!-- <ConstantValue PlanePosition="Max" Value="5.0"/> -->
+               <!-- Other options are (examples): -->
+               <Periodic/>
+               <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
+            </Plane>
+            <Plane Axis="Y">
+               <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
+               <!-- <ConstantDerivative PlanePosition="Max" Value="5.0"/> -->
+               <!-- Other options are (examples): -->
+               <Periodic/>
+               <!-- <ConstantValue PlanePosition="Min" Value="10.0"/> -->
+            </Plane>
+         </BoundaryConditions>
+      </DiffusionField>
+   </Steppable>
+   
+    <Steppable Type="UniformInitializer">
+    
+       <!-- <Region> -->
+          <!-- <BoxMin x="35" y="35" z="0"/> -->
+          <!-- <BoxMax x="260" y="40" z="1"/> -->
+          <!-- <Gap>0</Gap> -->
+          <!-- <Width>5</Width> -->
+          <!-- <Types>Wall</Types> -->
+       <!-- </Region> -->
+       
+       <!-- <Region> -->
+          <!-- <BoxMin x="35" y="255" z="0"/> -->
+          <!-- <BoxMax x="260" y="260" z="1"/> -->
+          <!-- <Gap>0</Gap> -->
+          <!-- <Width>5</Width> -->
+          <!-- <Types>Wall</Types> -->
+       <!-- </Region> -->
+       
+       <!-- <Region> -->
+          <!-- <BoxMin x="35" y="35" z="0"/> -->
+          <!-- <BoxMax x="40" y="260" z="1"/> -->
+          <!-- <Gap>0</Gap> -->
+          <!-- <Width>5</Width> -->
+          <!-- <Types>Wall</Types> -->
+       <!-- </Region> -->
+       
+       <!-- <Region> -->
+          <!-- <BoxMin x="255" y="35" z="0"/> -->
+          <!-- <BoxMax x="260" y="260" z="1"/> -->
+          <!-- <Gap>0</Gap> -->
+          <!-- <Width>5</Width> -->
+          <!-- <Types>Wall</Types> -->
+       <!-- </Region> -->
+       
+       
+       <!-- <Region> -->
+          <!-- <BoxMin x="50" y="50" z="0"/> -->
+          <!-- <BoxMax x="250" y="250" z="1"/> -->
+          <!-- <Gap>3</Gap> -->
+          <!-- <Width>7</Width> -->
+          <!-- <Types>EC</Types> -->
+       <!-- </Region> -->
+       
+       <Region>
+          <BoxMin x="0" y="00" z="0"/>
+          <BoxMax x="200" y="200" z="1"/>
+          <Gap>3</Gap>
+          <Width>7</Width>
+          <Types>EC</Types>
+       </Region>
+       
+    </Steppable>
+    
+    
+   
+   <!-- <Steppable Type="BlobInitializer"> -->
+      <!-- &lt;!&ndash; Initial layout of cells in the form of spherical (circular in 2D) blob &ndash;&gt;  -->
+      <!-- <Region> -->
+         <!-- <Center x="200" y="200" z="0"/> -->
+         <!-- <Radius>195</Radius> -->
+         <!-- <Gap>3</Gap> -->
+         <!-- <Width>7</Width> -->
+         <!-- <Types>EC</Types> -->
+      <!-- </Region> -->
+   <!-- </Steppable> -->
+ 
+</CompuCell3D>
