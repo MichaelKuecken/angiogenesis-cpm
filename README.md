@@ -1,7 +1,7 @@
 # Reference model of contact ihibited angiogenenesis
 
 ## Contributors:
-Lorenzo Veschini, James Glazier, Rahuman Sheriff, Yi Jiang, Hana Dobrovolny, Michael Kücken 
+Lorenzo Veschini, James Glazier, Rahuman Sheriff, Yi Jiang, Hana Dobrovolny, Michael Kücken, Inge Wortel 
 
 This repository contains high-level description and schemas to create CPM simulations of Angiogenesis based on previous work published in:
 
@@ -16,11 +16,11 @@ Tests: diffusion rate, chemotaxis, cell movement, cell-cell contact energies.
 
 ## In this repo
 * Schema of the Angiogenesis Model
-* Scripts to implement the simulation in CompuCell3d and Morpheus.
+* Scripts to implement the simulation in CompuCell3d, Morpheus, and Artistoo.
 * Scripts to analyse simulations outputs (binary images)
     * Example image outputs
     * Example data 
-* UPCOMING: Scripts to compare outputs from differnt simulation platforms 
+* UPCOMING: Scripts to compare outputs from differnt simulation platforms  
 
 ## References:
 
