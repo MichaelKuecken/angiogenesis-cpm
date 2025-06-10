@@ -51,3 +51,5 @@ data/combined-%-data.csv : src/combine-csv.R data/CC3D-%.csv data/Morpheus-%.csv
 plots/comp-%.pdf : src/plot-comparison.R data/combined-%-data.csv | plots
 	Rscript $^ $* $@
 
+plots/metrics-%.pdf : src/plot-all-metrics.R data/combined-%-data.csv | plots
+	Rscript $^ $* $@

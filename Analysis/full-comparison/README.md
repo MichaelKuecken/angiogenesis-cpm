@@ -36,13 +36,19 @@ make data/combined-chemstrength-data.csv
 
 This will run analysis for all the frameworks and then combine the result in one csv file.
 
-Then, to create the plot using `src/plot-comparison.R`
+Then, to create the plot of number of lacunae using `src/plot-comparison.R`
 
 ```
 make plots/comp-chemstrength.pdf
 ```
 
 (to change colors, change the hex codes in line 10 of `src/plot-comparison.R`)
+
+Alternatively, make the plot of the other metrics using:
+
+```
+make plots/metrics-chemstrength.pdf
+```
 
 ### Running the pipeline (without Make)
 
@@ -75,6 +81,11 @@ Rscript src/plot-comparison.R data/combined-chemstrength-data.csv chemstrength p
 
 (or replace all "chemstrength" with e.g. "cellcell", "satstrength", or "vegfdegr" as required).
 
+Or for the plot of all metrics:
+
+```
+Rscript src/plot-all-metrics.R data/combined-chemstrength-data.csv chemstrength plots/metrics-chemstrength.pdf
+```
 
 ## Folder structure
 
