@@ -38,6 +38,6 @@ parms/screen-Jcc.txt : src/makeParamTable.R | parms
 	
 # Run experiments in parallel
 
-.exps/% : src/simulation-wrapper.py src/angiogenesis-simulation.js parms/screen-%.txt | img node_modules .exps
+.exps/% : run.py src/angiogenesis-simulation.js parms/screen-%.txt | img node_modules .exps
 	python run.py -s src/angiogenesis-simulation.js -f parms/screen-$*.txt -i img/screen-$* -n $(NSIM) -j $(MAXPROC) && touch $@
 
