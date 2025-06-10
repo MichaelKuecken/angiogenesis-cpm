@@ -50,6 +50,12 @@ Alternatively, make the plot of the other metrics using:
 make plots/metrics-chemstrength.pdf
 ```
 
+Or the estimation plots using:
+
+```
+make plots/estimation-chemstrength.pdf
+```
+
 ### Running the pipeline (without Make)
 
 If you don't have GNU Make you can still run the analysis manually. First: ensure the
@@ -85,6 +91,12 @@ Or for the plot of all metrics:
 
 ```
 Rscript src/plot-all-metrics.R data/combined-chemstrength-data.csv chemstrength plots/metrics-chemstrength.pdf
+```
+
+Or for the estimation plots: 
+
+```
+Rscript src/estimation-plots.R data/combined-chemstrength-data.csv chemstrength plots/metrics-chemstrength.pdf
 ```
 
 ## Folder structure

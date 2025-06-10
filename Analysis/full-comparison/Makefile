@@ -48,8 +48,17 @@ data/%-vegfdegr.csv : analyse.py src/get-num-domains.py | data compare_multipler
 data/combined-%-data.csv : src/combine-csv.R data/CC3D-%.csv data/Morpheus-%.csv data/Artistoo-%.csv
 	Rscript $^ $@
 
+# ========= PLOTS
+
+comparison-plots : $(foreach s, $(SCANS), plots/comp-$(s).pdf )
+estimation-plots : $(foreach s, $(SCANS), plots/estimation-$(s).pdf )
+metric-plots : $(foreach s, $(SCANS), plots/metrics-$(s).pdf )
+
 plots/comp-%.pdf : src/plot-comparison.R data/combined-%-data.csv | plots
 	Rscript $^ $* $@
 
 plots/metrics-%.pdf : src/plot-all-metrics.R data/combined-%-data.csv | plots
+	Rscript $^ $* $@
+
+plots/estimation-%.pdf : src/estimation-plots.R data/combined-%-data.csv | plots
 	Rscript $^ $* $@
