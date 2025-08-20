@@ -22,7 +22,7 @@ Details are outlined below.
 
 ## Cellular Potts Model
 
-#### Representation
+### Representation
 The CPM is implemented as a lattice $G_\text{CPM}$ of width $w$ and height $h$, consisting of $n_p = w \times h$ pixels $p$ with periodic boundary conditions in all dimensions.
 A pixel's identity $\sigma(p)$ reflects by which endothelial cell (EC) the position is currently occupied:
 
@@ -34,12 +34,15 @@ $$\sigma(p) = \begin{cases}
 \end{cases}$$
 
 We also define the "cell type" $\tau(p)$ as:
+
 $$\tau(p) = \begin{cases}
 0 & \sigma(p) = 0\\
 1 & \text{otherwise}
 \end{cases}$$
 
-#### Algorithm: naive variant
+### Update algorithm
+
+#### Naive variant
 
 Every Monte Carlo Step (MCS), $n_p$ copy attempts are performed using the following modified Metropolis-Hastings algorithm. 
 Naively speaking, the basic algorithm to perform one MCS works as follows:
@@ -61,7 +64,7 @@ $$P_\text{copy}(p_s \rightarrow p_t) = \begin{cases}
 
 We'll call this the "naive" algorithm. In practice, this is inefficient since in many cases, $\sigma(p_s) = \sigma(p_t)$ and there is no need to evaluate the corresponding $\Delta \mathcal{H}$. 
 
-#### Algorithm: "edgelist" version
+#### "edgelist" variant
 
 In practice, we therefore use the so-called "edgelist" algorithm instead:
 
@@ -74,14 +77,42 @@ In practice, we therefore use the so-called "edgelist" algorithm instead:
   3. $\Delta t \leftarrow \Delta t + \frac{1}{n_E}$ (the expected time this would have taken to find a $p_s \in \cal{E}$ through uniform sampling from the entire grid)
   4. Proceed with steps 3-5 of the naive algorithm.
  
-#### Hamiltonian
+### Hamiltonian
+
+#### Global energy
 
 The global system energy or Hamiltonian $H$ contains components for surface energies and area conservation, and is defined as:
 
-$$\cal{H} = \sum_{p_i}\sum_{p_j \in \cal{N}(p_i)} J $$
+$$\cal{H} = \cal{H}\_\text{surface} + \cal{H}\_\text{area}$$
+
+The surface energy is defined as:
+
+$$\cal{H}\_\text{surface} = \sum_{p_i}\sum_{p_j \in \cal{N}^S(p_i)} (1 - \delta_{ij}) J(\tau_i, \tau_j), \qquad \delta_{ij} = \begin{cases}
+  0 & \sigma(p_i) \neq \sigma(p_j) \\
+  1 & \sigma(p_i) = \sigma(p_j)
+\end{cases}$$
+
+Where:
+
+- The first sum runs over all pixels $p_i$ on the grid
+- $\cal{N}^S$ is the neighborhood function used to define surface/contact energies (which may or may not be the same as the neighborhood $\cal{N}^{MH}$ used for sampling)
+- $\tau_i,\tau_j$ are shorthand for $\tau(p_i), \tau(p_j)$, and the parameters $J(\tau_i, \tau_j)$ reflect interface energies
+
+The area preservation term is defined as: 
+
+$$\cal{H}\_\text{area} = \lambda\_\text{area} \sum_{\text{cells }\sigma} (A(\sigma) - A_\text{target})^2$$
+
+Where: 
+
+- the sum runs over all ECs $\sigma$ currently on the grid
+- $A(\sigma)$ is the current area of the EC with identity $\sigma$
+- the lagrange multiplier $\lambda_\text{area}$ is a parameter controlling the strength of the area conservation term, and
+- $A_\text{target}$ is the target area (in pixels) of the ECs
+
+#### Chemotaxis
 
 
-#### Overview of CPM implementation details
+### Overview of CPM implementation details
 
 
 | Parameter/choice | Description                                                                 | Value |
@@ -91,7 +122,10 @@ $$\cal{H} = \sum_{p_i}\sum_{p_j \in \cal{N}(p_i)} J $$
 | Sampling algorithm | How is $p_s$ sampled?  | edgelist |
 | $\cal{N}^\text{MH}$ | Neighborhood definition used for sampling neighboring $p_s, p_t$ in the modified Metropolis-Hastings algorithm | 1st-order (von Neumann) |
 | CPM Temperature $T$ | | T = 5 |
-
+| $\cal{N}^\text{S}$ | Neighborhood used to define surface energies | 4th-order |
+| Interface energies $J(\tau_i,\tau_j)$ | | $J(0,1) = J(1,0) = 4$, $J(1,1) = 1$ |
+| $\lambda_\text{area}$ | strength of area conservation term | $\lambda_\text{area} = 5$ |
+| $A_\text{target}$ | target area of an EC (in pixels) | $A_\text{target} = 50$ |
 
 ## Chemokine field
 
