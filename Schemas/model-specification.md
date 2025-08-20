@@ -22,7 +22,7 @@ Details are outlined below.
 
 ## Cellular Potts Model
 
-### Representation
+### Representation and notation
 The CPM is implemented as a lattice $G_\text{CPM}$ of width $w$ and height $h$, consisting of $n_p = w \times h$ pixels $p$ with periodic boundary conditions in all dimensions.
 A pixel's identity $\sigma(p)$ reflects by which endothelial cell (EC) the position is currently occupied:
 
@@ -104,30 +104,81 @@ $$\cal{H}\_\text{area} = \lambda\_\text{area} \sum_{\text{cells }\sigma} (A(\sig
 
 Where: 
 
-- the sum runs over all ECs $\sigma$ currently on the grid
+- the sum runs over all ECs $\sigma > 0$ currently on the grid
 - $A(\sigma)$ is the current area of the EC with identity $\sigma$
-- the lagrange multiplier $\lambda_\text{area}$ is a parameter controlling the strength of the area conservation term, and
+- the lagrange multiplier $\lambda_\text{area}$ is a parameter controlling the strength of the area conservation term
 - $A_\text{target}$ is the target area (in pixels) of the ECs
 
 #### Chemotaxis
 
+In addition to the surface energy and area conservation terms, we introduce a "work term" promoting chemotaxis towards higher chemokine concentrations.
+We define a general work term for movement along a given direction as the energy difference 
+$\Delta H (p_\text{s} \rightarrow p_\text{t})$ associated with a proposed copy attempt from source pixel $p_\text{s}$ into target pixel $p_\text{t}$, 
+involving cells $\sigma_\text{s} = \sigma(p_s)$ and $\sigma_\text{t} = \sigma(p_t)$. In other words, this reflects the work acting on the cell(s) due to the displacement induced by 
+the update. Generally speaking:
+
+$$\Delta H_\text{work} (p_s \rightarrow p_t) = \delta_s(\tau_s, \tau_t) \Delta H_\text{work} (\sigma_s) + \delta_t(\tau_s, \tau_t) \Delta H_\text{work}(\sigma_t)$$
+
+where $\delta_\text{s}(\tau_s, \tau_t), \delta_\text{t}(\tau_s, \tau_t) \in 0,1$ determine whether the chemotactic force performing the work acts on the "protruding" cell $\sigma_\text{s}$ and/or the "retracting" cell $\sigma_\text{t}$. Unless otherwise specified, we assume:
+
+$$\delta_\text{s}(\tau_s, \tau_t)  = \begin{cases}
+  0 & \tau_s = 0, \tau_t = 1 \\
+  1 & \tau_s = 1, \tau_t = 0 \\
+  0 & \tau_s = 1, \tau_t = 1 \\
+\end{cases}$$
+
+$$\delta_\text{t}(\tau_s, \tau_t) = \begin{cases}
+  1 & \tau_s = 0, \tau_t = 1 \\
+  0 & \tau_s = 1, \tau_t = 0 \\
+  0 & \tau_s = 1, \tau_t = 1 \\
+\end{cases}$$
+
+
+More specifically, we define the chemotactic work term as:
+
+$$\Delta H_\text{work} (\sigma) =  \Delta H_\text{chem} (\sigma) = \mu(\sigma) \left( \frac{c( p_t )}{1 + sc(p_t)} - \frac{c( p_s )}{1 + sc(p_s)} \right)$$
+
+Where:
+
+- $c( p )$ is the current VEGF concentration at the matching position $p$ on the linked chemokine grid
+- the chemotactic strength parameter $\mu(\sigma)$ is a constant: $\mu$
+- $s$ is the saturation coefficient of sensing the chemokine gradient
 
 ### Overview of CPM implementation details
-
 
 | Parameter/choice | Description                                                                 | Value |
 |-----------|-----------------------------------------------------------------------------|-------|
 | $w \times h$ | Grid dimensions in horizontal and vertical direction (number of pixels) | 200 $\times$ 200 pixels |
 | Boundary conditions | | periodic |
-| Sampling algorithm | How is $p_s$ sampled?  | edgelist |
+| Update algorithm | How is $p_s$ sampled?  | edgelist |
+| $T$ | CPM temperature controlling acceptance rate of energetically unfavourable updates | T = 5 |
 | $\cal{N}^\text{MH}$ | Neighborhood definition used for sampling neighboring $p_s, p_t$ in the modified Metropolis-Hastings algorithm | 1st-order (von Neumann) |
-| CPM Temperature $T$ | | T = 5 |
 | $\cal{N}^\text{S}$ | Neighborhood used to define surface energies | 4th-order |
 | Interface energies $J(\tau_i,\tau_j)$ | | $J(0,1) = J(1,0) = 4$, $J(1,1) = 1$ |
 | $\lambda_\text{area}$ | strength of area conservation term | $\lambda_\text{area} = 5$ |
-| $A_\text{target}$ | target area of an EC (in pixels) | $A_\text{target} = 50$ |
+| $A_\text{target}$ | target area of an EC (in pixels) | $A_\text{target} = 50$ pixels |
+| $\delta_\text{s}(\tau_s, \tau_t)$ | Do we consider the work on cell $\sigma_s$ given a copy attempt from type $\tau_s$ to $\tau_t$? | $\delta_s( 0, 1) = 0$,  $\delta_s( 1, 0) = 1$ $\delta_s( 1, 1) = 0$|
+| $\delta_\text{t}(\tau_s, \tau_t)$ | Do we consider the work on cell $\sigma_t$ given a copy attempt from type $\tau_s$ to $\tau_t$? | $\delta_t( 0, 1) = 1$,  $\delta_t( 1, 0) = 0$ $\delta_t( 1, 1) = 0$|
+| $\mu(\sigma)$ | Strength of the chemotactic force acting on cell $\sigma$ | $\mu(\sigma) = \mu = 500$ |
+| $s$ | Saturation coefficient of sensing the gradient | $s = 0.1$ |
+
 
 ## Chemokine field
+
+The chemokine is implemented on a separate (Float32) grid of the same dimensions as the CPM itself. The chemokine is described by the following PDE:
+
+$$\frac{\partial c(p)}{\partial t} = \beta(p)  + D\nabla^2 c(p) - k_\text{decay}c(p) $$
+
+where $D$ is the diffusion coefficient (in pixels<sup>2</sup>/MCS), $k_\text{decay}$ the degradation rate per MCS, and $\beta(p)$ the chemokine production:
+
+$$\beta(p) = \begin{cases}
+k_\text{prod} & p = p_\text{chem source}\\
+0 & \text{otherwise}
+\end{cases} $$
+
+The PDE is implemented using a finite difference scheme (https://en.wikipedia.org/wiki/Discrete_Laplace_operator#Finite_differences) with h = 1, and solved with $N_{ds}=10$ steps after every MCS in the CPM (where $D$, $k_\text{prod}$ and $k_\text{decay}$ have to be divided by $N_{ds}$ to maintain the same effective rates per MCS).
+
+
 
 ## Simulation details
 
