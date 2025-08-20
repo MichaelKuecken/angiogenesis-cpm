@@ -136,11 +136,11 @@ $$\delta_\text{t}(\tau_s, \tau_t) = \begin{cases}
 
 More specifically, we define the chemotactic work term as:
 
-$$\Delta H_\text{work} (\sigma) =  \Delta H_\text{chem} (\sigma) = \mu(\sigma) \left( \frac{c( p_t )}{1 + sc(p_t)} - \frac{c( p_s )}{1 + sc(p_s)} \right)$$
+$$\Delta H_\text{work} (\sigma) =  \Delta H_\text{chem} (\sigma) = -\mu(\sigma) \left( \frac{c( p_t )}{1 + sc(p_t)} - \frac{c( p_s )}{1 + sc(p_s)} \right)$$
 
 Where:
 
-- $c( p )$ is the current VEGF concentration at the matching position $p$ on the linked chemokine grid
+- $c( p )$ is the current VEGF concentration at the matching position $p$ on $G_\text{VEGF}$
 - the chemotactic strength parameter $\mu(\sigma)$ is a constant: $\mu$
 - $s$ is the saturation coefficient of sensing the chemokine gradient
 
@@ -154,31 +154,58 @@ Where:
 | $T$ | CPM temperature controlling acceptance rate of energetically unfavourable updates | T = 5 |
 | $\cal{N}^\text{MH}$ | Neighborhood definition used for sampling neighboring $p_s, p_t$ in the modified Metropolis-Hastings algorithm | 1st-order (von Neumann) |
 | $\cal{N}^\text{S}$ | Neighborhood used to define surface energies | 4th-order |
-| Interface energies $J(\tau_i,\tau_j)$ | | $J(0,1) = J(1,0) = 4$, $J(1,1) = 1$ |
+| Interface energies $J(\tau_i,\tau_j)$ | | $J(0,1) = J(1,0) = 4$, $J(1,1)$ is varied with default $J(1,1) = 1$ |
 | $\lambda_\text{area}$ | strength of area conservation term | $\lambda_\text{area} = 5$ |
 | $A_\text{target}$ | target area of an EC (in pixels) | $A_\text{target} = 50$ pixels |
 | $\delta_\text{s}(\tau_s, \tau_t)$ | Do we consider the work on cell $\sigma_s$ given a copy attempt from type $\tau_s$ to $\tau_t$? | $\delta_s( 0, 1) = 0$,  $\delta_s( 1, 0) = 1$ $\delta_s( 1, 1) = 0$|
 | $\delta_\text{t}(\tau_s, \tau_t)$ | Do we consider the work on cell $\sigma_t$ given a copy attempt from type $\tau_s$ to $\tau_t$? | $\delta_t( 0, 1) = 1$,  $\delta_t( 1, 0) = 0$ $\delta_t( 1, 1) = 0$|
-| $\mu(\sigma)$ | Strength of the chemotactic force acting on cell $\sigma$ | $\mu(\sigma) = \mu = 500$ |
-| $s$ | Saturation coefficient of sensing the gradient | $s = 0.1$ |
+| $\mu(\sigma)$ | Strength of the chemotactic force acting on cell $\sigma$ | Varied, with default $\mu(\sigma) = \mu = 500$ |
+| $s$ | Saturation coefficient of sensing the gradient | Varied, with default $s = 0.1$ |
 
 
 ## Chemokine field
 
-The chemokine is implemented on a separate (Float32) grid of the same dimensions as the CPM itself. The chemokine is described by the following PDE:
+### Representations
+The chemokine is implemented on a separate (Float32) grid of the same $w \times h$ dimensions as the CPM itself and with periodic boundaries.
+$c(p)$ denotes the current chemokine concentration at pixel $p$.
 
-$$\frac{\partial c(p)}{\partial t} = \beta(p)  + D\nabla^2 c(p) - k_\text{decay}c(p) $$
+### Initial condition
+$c(p) = 0$ everywhere.
 
-where $D$ is the diffusion coefficient (in pixels<sup>2</sup>/MCS), $k_\text{decay}$ the degradation rate per MCS, and $\beta(p)$ the chemokine production:
+### PDE
+The chemokine is described by the following PDE:
 
-$$\beta(p) = \begin{cases}
-k_\text{prod} & p = p_\text{chem source}\\
+$$\frac{\partial c(p)}{\partial t} = \alpha(p)  + D\nabla^2 c(p) - \epsilon(p) c(p) $$
+
+where $D$ is the diffusion coefficient (in pixels<sup>2</sup>/MCS), $\epsilon(p)$ the degradation rate at position $p$ per MCS, and $\alpha(p))$ the chemokine production
+at position $p$ per MCS:
+
+$$\alpha(p) = \begin{cases}
+\alpha & \sigma(p) > 0 \text{ in } G_\text{CPM}\\
 0 & \text{otherwise}
 \end{cases} $$
 
-The PDE is implemented using a finite difference scheme (https://en.wikipedia.org/wiki/Discrete_Laplace_operator#Finite_differences) with h = 1, and solved with $N_{ds}=10$ steps after every MCS in the CPM (where $D$, $k_\text{prod}$ and $k_\text{decay}$ have to be divided by $N_{ds}$ to maintain the same effective rates per MCS).
+$$\epsilon(p) = \begin{cases}
+0 & \sigma(p) > 0 \text{ in } G_\text{CPM}\\
+\epsilon & \text{otherwise}
+\end{cases} $$
 
+### Solver
 
+Although the parameters are expressed in units per MCS, the PDE is implemented using a finite difference scheme (https://en.wikipedia.org/wiki/Discrete_Laplace_operator#Finite_differences) with h = 1, and solved with $N_{ds}=10$ steps after every MCS in the CPM (where $D$, $\alpha$ and $\epsilon$ have to be divided by $N_{ds}$ to maintain the same effective rates per MCS).
+
+### Overview of PDE implementation details
+
+| Parameter/choice | Description                                                                 | Value |
+|-----------|-----------------------------------------------------------------------------|-------|
+| $w \times h$ | Grid dimensions in horizontal and vertical direction (number of pixels) | 200 $\times$ 200 pixels |
+| Boundary conditions | | periodic |
+| Data type | | Float32 |
+| Solver type | | Finite difference scheme with $h=1$ |
+| $N_{ds}$ | Solver timescale : how many diffusion steps are performed for every MCS? | $N_{ds}=10$ |
+| $D$ | diffusion coefficient | $D = 1$ pix<sup>2</sup>/MCS, $D = 1/N_{ds}$ pix<sup>2</sup>/diffusion step |
+| $\alpha$ | VEGF secretion rate by ECs | $\alpha = 0.3$/MCS, $\alpha = 0.3/N_{ds}$ /diffusion step |
+| $\epsilon$ | VEGF decay rate outside of ECs | Varied, with default $\epsilon = 0.3$ /MCS, $\epsilon = 1/N_{ds}$ /diffusion step |
 
 ## Simulation details
 
