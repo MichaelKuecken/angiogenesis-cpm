@@ -9,14 +9,14 @@ Merks RMH, Perryn ED, Shirinifard A, Glazier JA (2008) Contact-Inhibited Chemota
 The model consists of endothelial cells (ECs) implemented in a cellular Potts model (CPM).  ECs locally produce a chemokine, VEGF, which diffuses in space and decays outside of ECs. 
 As ECs also chemotax towards higher VEGF concentrations, this introduces a feedback loop: high VEGF recruits more ECs, which locally produce even more VEGF. 
 
-The model therefore consists of two linked fields:
+The model therefore consists of two linked fields with a shared coordinate system:
 - The CPM field, $G_\text{CPM}$ containing the ECs
 - The chemokine field $G_\text{VEGF}$ containing VEGF
 
 Which interact as follows:
-- New VEGF is deposited in the chemokine field iff the corresponding position in the CPM is occupied by an EC
-- VEGF is degraded in the chemokine field iff the corresponding position in the CPM is not occupied by an EC
-- A chemotaxis term favours motility of ECs in the CPM field towards positions with higher VEGF concentration in the chemokine field.
+- New VEGF is deposited at position $p$ in $G_\text{VEGF}$ iff the corresponding position $p$ in $G_\text{CPM}$ is occupied by an EC
+- VEGF is degraded at position $p$ in $G_\text{VEGF}$ iff the corresponding position $p$ in $G_\text{CPM}$ is not occupied by an EC
+- A chemotaxis term favours motility of ECs in $G_\text{CPM}$ towards positions with higher VEGF concentration $c(p)$ in $G_\text{VEGF}$.
 
 Details are outlined below.
 
