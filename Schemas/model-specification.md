@@ -6,6 +6,8 @@ Merks RMH, Perryn ED, Shirinifard A, Glazier JA (2008) Contact-Inhibited Chemota
 
 ## Model overview
 
+### Components
+
 The model consists of endothelial cells (ECs) implemented in a cellular Potts model (CPM).  ECs locally produce a chemokine, VEGF, which diffuses in space and decays outside of ECs. 
 As ECs also chemotax towards higher VEGF concentrations, this introduces a feedback loop: high VEGF recruits more ECs, which locally produce even more VEGF. 
 
@@ -13,18 +15,30 @@ The model therefore consists of two linked fields with a shared coordinate syste
 - The CPM field, $G_\text{CPM}$ containing the ECs
 - The chemokine field $G_\text{VEGF}$ containing VEGF
 
-Which interact as follows:
-- New VEGF is deposited at position $p$ in $G_\text{VEGF}$ iff the corresponding position $p$ in $G_\text{CPM}$ is occupied by an EC
-- VEGF is degraded at position $p$ in $G_\text{VEGF}$ iff the corresponding position $p$ in $G_\text{CPM}$ is not occupied by an EC
+### Interactions
+
+The two fields interact as follows:
+
+- New VEGF is deposited at position $p$ in $G_\text{VEGF}$ if and only if the corresponding position $p$ in $G_\text{CPM}$ is occupied by an EC
+- VEGF is degraded at position $p$ in $G_\text{VEGF}$ if and only if the corresponding position $p$ in $G_\text{CPM}$ is not occupied by an EC
 - A chemotaxis term favours motility of ECs in $G_\text{CPM}$ towards positions with higher VEGF concentration $c(p)$ in $G_\text{VEGF}$.
 
-Details are outlined below.
+### Model updates
+
+A simulation step consists of the following sequence:
+
+1. Run one simulation step (MCS) in $G_\text{CPM}$
+2. Run $N_d$ PDE steps in $G_\text{VEGF}$ by repeating the following $N_d$ times:
+    1. Perform a diffusion step at rate $D/N_d$
+    2. Perform chemokine production within ECs at rate $\alpha / N_d$ and chemokine decay outside of ECs at rate $\epsilon / N_d$
+
+For details on each of these, see below.
 
 ## Cellular Potts Model
 
 ### Representation and notation
 The CPM is implemented as a lattice $G_\text{CPM}$ of width $w$ and height $h$, consisting of $n_p = w \times h$ pixels $p$ with periodic boundary conditions in all dimensions.
-A pixel's identity $\sigma(p)$ reflects by which endothelial cell (EC) the position is currently occupied:
+The identity function $\sigma(p)$ reflects by which endothelial cell (EC) the position is currently occupied:
 
 $$\sigma(p) = \begin{cases}
 0 & \text{unoccupied}\\
@@ -33,12 +47,22 @@ $$\sigma(p) = \begin{cases}
 & etc.
 \end{cases}$$
 
-We also define the "cell type" $\tau(p)$ as:
+We also define the "cell type" function $\tau(p)$ as:
 
 $$\tau(p) = \begin{cases}
 0 & \sigma(p) = 0\\
 1 & \text{otherwise}
 \end{cases}$$
+
+### Initial condition
+
+Starting with an empty CPM ($\sigma(p) = 0 \quad \forall \quad p \in G_\text{CPM}$), before the start of the simulation, 
+400 ECs were seeded in a grid as single pixels as follows:
+
+$$ p_{mn} \leftarrow ( 5 + 10m, 5 + 10n )$$
+$$ \sigma(p_{mn}) \leftarrow m + 20n + 1$$
+
+for all $m \in 0, ... , 19$ and $n \in 0, ..., 19$, and with no burnin time before the start of the simulation.
 
 ### Update algorithm
 
@@ -150,6 +174,7 @@ Where:
 |-----------|-----------------------------------------------------------------------------|-------|
 | $w \times h$ | Grid dimensions in horizontal and vertical direction (number of pixels) | 200 $\times$ 200 pixels |
 | Boundary conditions | | periodic |
+| Initial condition | | $\sigma(p) = 0$ except for 400 ECs seeded as single pixels in a 20 $\times$ 20 grid (described above) |
 | Update algorithm | How is $p_s$ sampled?  | edgelist |
 | $T$ | CPM temperature controlling acceptance rate of energetically unfavourable updates | T = 5 |
 | $\cal{N}^\text{MH}$ | Neighborhood definition used for sampling neighboring $p_s, p_t$ in the modified Metropolis-Hastings algorithm | 1st-order (von Neumann) |
