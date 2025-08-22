@@ -1,4 +1,4 @@
-# Angiogenesis model specification (work in progress)
+# Angiogenesis model specification
 
 The following implementation refers to the model implemented in: 
 
@@ -225,6 +225,7 @@ Although the parameters are expressed in units per MCS, the PDE is implemented u
 |-----------|-----------------------------------------------------------------------------|-------|
 | $w \times h$ | Grid dimensions in horizontal and vertical direction (number of pixels) | 200 $\times$ 200 pixels |
 | Boundary conditions | | periodic |
+| Initial conditions | | $c(p)= 0$ everywhere |
 | Data type | | Float32 |
 | Solver type | | Finite difference scheme with $h=1$ |
 | $N_{ds}$ | Solver timescale : how many diffusion steps are performed for every MCS? | $N_{ds}=10$ |
@@ -232,5 +233,7 @@ Although the parameters are expressed in units per MCS, the PDE is implemented u
 | $\alpha$ | VEGF secretion rate by ECs | $\alpha = 0.3$/MCS, $\alpha = 0.3/N_{ds}$ /diffusion step |
 | $\epsilon$ | VEGF decay rate outside of ECs | Varied, with default $\epsilon = 0.3$ /MCS, $\epsilon = 1/N_{ds}$ /diffusion step |
 
-## Simulation details
+## Other simulation details
+
+We run the simulation for 500 MCS and output the CPM grid as a binary image at the end of the simulation.
 
