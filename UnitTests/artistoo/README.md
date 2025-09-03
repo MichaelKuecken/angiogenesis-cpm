@@ -1,5 +1,12 @@
 # Artistoo angiogenesis simulations
 
+Tests currently implemented : 
+
+- [x] Test 1 (single CPM cell, no chemokine)
+- [ ] Test 2 (multiple CPM cells, no chemokine)
+- [ ] Test 3 (PDE with no CPM cells)
+- [ ] Test 4 (Secretion, coupling PDE with a single but fixed CPM cell)
+
 ## Quick start (using conda)
 
 Install the conda environment using the file `env.yml` : 
