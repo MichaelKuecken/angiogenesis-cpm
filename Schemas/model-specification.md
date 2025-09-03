@@ -4,6 +4,8 @@ The following implementation refers to the model implemented in:
 
 Merks RMH, Perryn ED, Shirinifard A, Glazier JA (2008) Contact-Inhibited Chemotaxis in De Novo and Sprouting Blood-Vessel Growth. PLOS Computational Biology 4(9): e1000163. doi:  [10.1371/journal.pcbi.1000163](https://doi.org/10.1371/journal.pcbi.1004163).
 
+But with some minor modifications / more explicit implementation definitions.
+
 ## Model overview
 
 ### Components
