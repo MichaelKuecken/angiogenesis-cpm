@@ -253,7 +253,7 @@ We run the simulation for 500 MCS and output the CPM grid as a binary image at t
 Everything else stays the same as above.
 
 - *CPM initialization*: seed one EC as a single pixel in the middle of the grid instead of seeding 400 ECs in a 20 x 20 grid.
-- *Disable PDE*: ... by setting $\alpha = \epsilon = D = 0$ ensuring that $c(p)=0$ at every time for all $p$.
+- *Disable PDE*: ... by setting $\alpha = \epsilon = D = 0$ ensuring that $c(p)=0$ at every time for all $p$ (and not running the PDE update for speed)
 - *Repeats*: 100 independent simulations
 
 **Output format**
