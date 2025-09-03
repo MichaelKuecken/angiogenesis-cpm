@@ -293,17 +293,32 @@ TBD
 
 **Changes wrt the original simulation**
 
-TBD
+- *CPM initialization* : do not seed any cells
+- *Repeats*: 1 simulation only (this is deterministic)
+- *PDE* : instead of linking secretion and degradation to the CPM state, do the following instead:
+
+$$\alpha(p) = \begin{cases}
+\alpha & p = p_\text{mid}\\
+0 & \text{otherwise}
+\end{cases} $$
+
+$$\epsilon(p) = \begin{cases}
+0 & p \neq p_\text{mid}\\
+\epsilon & \text{otherwise}
+\end{cases} $$
+
+where $p_\text{mid}$ = (100,100) is the grid midpoint.
 
 **Output format**
 
-TBD
+In csv format, output the chemokine concentration $c(p)$ at $p = (80,80)$ over time; use the following columns:
+
+      - `time` : elapsed time in MCS (record at $t = 0, 10, 20, ... , 490, 500$)
+      - `conc` : corresponding amount of chemokine at $p = (80,80)$
 
 **Comparative analysis**
 
-TBD
-
-
+After collecting these csv's from all implementations, we will compare the concentration - time curves directly. 
 
 ## Test 4 : secretion
 
@@ -311,7 +326,17 @@ TBD
 
 **Changes wrt the original simulation**
 
-TBD
+We simulate in two phases:
+
+First initialize the CPM by changing from the original simulation:
+
+- *CPM initialization*: seed one EC as a single pixel in the middle of the grid instead of seeding 400 ECs in a 20 x 20 grid.
+- *Disable PDE*: ... by setting $\alpha = \epsilon = D = 0$ ensuring that $c(p)=0$ at every time for all $p$.
+
+After 10 MCS :
+
+- *Freeze CPM* : stop performing updates on the CPM
+- *Restart PDE* : ... by setting $\alpha, \epsilon, D$ back to the original values as described in the full model specification
 
 **Output format**
 
