@@ -257,7 +257,7 @@ Everything else stays the same as above.
 - *Repeats*: 100 independent simulations
 
 **Output format**
-Instead of binary image at $t = 500 MCS$, output the following data for $t = 0, 10, 20, ... , 490, 500$, collected for all simulation repeats, in csv format with the following columns:
+Instead of binary image at $t = 500 MCS$, output the following data for $t = 10, 20, ... , 490, 500$, collected for all simulation repeats, in csv format with the following columns:
 
       - `time` : elapsed time in MCS
       - `rep` : ID of the simulation replicate
@@ -313,7 +313,7 @@ where $p_\text{mid}$ = (100,100) is the grid midpoint.
 
 In csv format, output the chemokine concentration $c(p)$ at $p = (80,80)$ over time; use the following columns:
 
-      - `time` : elapsed time in MCS (record at $t = 0, 10, 20, ... , 490, 500$)
+      - `time` : elapsed time in MCS (record at $t = 10, 20, ... , 490, 500$)
       - `conc` : corresponding amount of chemokine at $p = (80,80)$
 
 **Comparative analysis**
