@@ -258,6 +258,7 @@ Everything else stays the same as above.
 
 **Output format**
 Instead of binary image at $t = 500 MCS$, output the following data for $t = 0, 10, 20, ... , 490, 500$, collected for all simulation repeats, in csv format with the following columns:
+
       - `time` : elapsed time in MCS
       - `rep` : ID of the simulation replicate
       - `com_1` : x coordinate of the cell's center of mass
