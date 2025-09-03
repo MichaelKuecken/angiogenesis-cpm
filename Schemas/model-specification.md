@@ -37,7 +37,7 @@ For details on each of these, see below.
 ## Cellular Potts Model
 
 ### Representation and notation
-The CPM is implemented as a lattice $G_\text{CPM}$ of width $w$ and height $h$, consisting of $n_p = w \times h$ pixels $p$ with periodic boundary conditions in all dimensions.
+The CPM is implemented as a (square) lattice $G_\text{CPM}$ of width $w$ and height $h$, consisting of $n_p = w \times h$ pixels $p$ with periodic boundary conditions in all dimensions.
 The identity function $\sigma(p)$ reflects by which endothelial cell (EC) the position is currently occupied:
 
 $$\sigma(p) = \begin{cases}
@@ -172,6 +172,7 @@ Where:
 
 | Parameter/choice | Description                                                                 | Value |
 |-----------|-----------------------------------------------------------------------------|-------|
+| Lattice type | Type of lattice (square/hex/...) | square |
 | $w \times h$ | Grid dimensions in horizontal and vertical direction (number of pixels) | 200 $\times$ 200 pixels |
 | Boundary conditions | | periodic |
 | Initial condition | | $\sigma(p) = 0$ except for 400 ECs seeded as single pixels in a 20 $\times$ 20 grid (described above) |
