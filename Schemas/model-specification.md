@@ -240,3 +240,83 @@ Although the parameters are expressed in units per MCS, the PDE is implemented u
 
 We run the simulation for 500 MCS and output the CPM grid as a binary image at the end of the simulation.
 
+
+*******
+
+# Unit test specifications
+
+## Test 1 : single cell CPM dynamics without PDE
+
+**Goal** test single-cell dynamics for differences in implementation of CPM basics including update algorithm, grid including neighborhoods, and Hamiltonian (but since we are not modelling the chemokine, $\Delta H_\text{chemotaxis}$ will always equal zero).
+
+**Changes wrt the original simulation**
+Everything else stays the same as above.
+
+- *CPM initialization*: seed one EC as a single pixel in the middle of the grid instead of seeding 400 ECs in a 20 x 20 grid.
+- *Disable PDE*: ... by setting $\alpha = \epsilon = D = 0$ ensuring that $c(p)=0$ at every time for all $p$.
+- *Repeats*: 100 independent simulations
+
+**Output format**
+Instead of binary image at $t = 500 MCS$, output the following data for $t = 0, 10, 20, ... , 490, 500$, collected for all simulation repeats, in csv format with the following columns:
+      - `time` : elapsed time in MCS
+      - `rep` : ID of the simulation replicate
+      - `com_1` : x coordinate of the cell's center of mass
+      - `com_2` : y coordinate of the cell's center of mass
+      - `area` : the current cell area in number of pixels
+
+
+**Comparative analysis**
+The output csvs of each implementation will be compared in downstream analysis on:
+- motility of the center of mass (displacement distributions over time)
+- area distributions over time
+
+## Test 2 : multi-cell CPM dynamics without PDE
+
+**Goal** Test for differences in cell-cell interaction (e.g. through the cell-cell adhesion term).
+
+**Changes wrt the original simulation**
+
+TBD
+
+**Output format**
+
+TBD
+
+**Comparative analysis**
+
+TBD
+
+## Test 3 : PDE basics
+
+**Goal** test for differences in the PDE solving.
+
+**Changes wrt the original simulation**
+
+TBD
+
+**Output format**
+
+TBD
+
+**Comparative analysis**
+
+TBD
+
+
+
+## Test 4 : secretion
+
+**Goal** test for differences in the chemokine secretion mechanism. 
+
+**Changes wrt the original simulation**
+
+TBD
+
+**Output format**
+
+TBD
+
+**Comparative analysis**
+
+TBD
+
