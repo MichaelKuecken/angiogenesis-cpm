@@ -303,7 +303,7 @@ $$\alpha(p) = \begin{cases}
 \end{cases} $$
 
 $$\epsilon(p) = \begin{cases}
-0 & p \neq p_\text{mid}\\
+0 & p = p_\text{mid}\\
 \epsilon & \text{otherwise}
 \end{cases} $$
 
