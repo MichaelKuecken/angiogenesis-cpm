@@ -1,0 +1,16 @@
+{
+	"data" : [
+		{
+			"name" : "Artistoo\n(baseline)",
+			"desc" : "Artistoo implementation of unit test 3",
+			"file" : "testdata/artistoo-test3.csv",
+			"color" : "#c61675"
+		},
+		{
+			"name" : "Artistoo\n(order swap)",
+			"desc" : "Adapted Artistoo implementation of unit test3 swapping the order of secretion/decay and diffusion operations",
+			"file" : "testdata/artistooB-test3.csv",
+			"color" : "#ff8c00"
+		}
+	]
+}
