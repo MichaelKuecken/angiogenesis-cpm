@@ -54,8 +54,8 @@ The new data will appear in `test1-comparison.pdf`.
 
 An example of the output (here I compared the 'normal' Artistoo implementation with one where I deliberately changed the neighborhood function, to see that we can spot this in the test):
 
- <img width="30%" align="right" alt="image" src="https://github.com/user-attachments/assets/0177de59-b15c-4b93-a711-291191fb5419" />
+<img width="40%" align="right" alt="image" src="https://github.com/user-attachments/assets/65876134-7d4d-45b6-b2f0-093a78f36e0c" />
 
 
-  <b>A</b> Raw tracks starting from coordinate (100,100) where the cell was seeded in this test. <b>B,C</b> Distributions of x and y coordinate over time (solid line: mean, dashed lines: 95% CI across tracks). <b>D</b> Mean squared displacement. <b>E</b> Distribution of observed cell area during the simulation.  <b>F</b> Instantaneous speed distributions (measured over the 10 MCS timestep as specified in the output format). </span>
+  <b>A</b> Raw tracks starting from coordinate (100,100) where the cell was seeded in this test. <b>B,C</b> Distributions of x and y coordinate over time (solid line: mean, dashed lines: 95% CI across tracks). <b>D</b> Mean squared displacement. <b>E</b> Distribution of observed cell area during the simulation.  <b>F</b> Instantaneous speed distributions (measured over the 10 MCS timestep as specified in the output format). <b>G</b> like E but for the cell surface (see test spec for details on computation).
  

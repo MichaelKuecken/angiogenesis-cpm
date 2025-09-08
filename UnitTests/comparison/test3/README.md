@@ -51,6 +51,8 @@ The new data will appear in `test3-comparison.pdf`.
 
 An example of the output (here I compared the 'normal' Artistoo implementation with one where I deliberately swapped the order of the diffusion vs secretion/decay step, to see that we can spot this in the test):
 
+<img width="729" height="333" alt="image" src="https://github.com/user-attachments/assets/e7193ab0-4c96-41a3-9325-3e862ea7086e" />
+
 
 <b>A</b> Concentration over time at the output position (80,80). <b>B</b> Idem,  but now expressed as fold-change with respect
 to the implementation indicated with "REF". 
