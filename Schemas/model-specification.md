@@ -322,6 +322,8 @@ In csv format, output the chemokine concentration $c(p)$ at $p = (80,80)$ over t
 
 After collecting these csv's from all implementations, we will compare the concentration - time curves directly. 
 
+See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test3 for an example and instructions.
+
 ## Test 4 : secretion
 
 **Goal** test for differences in the chemokine secretion mechanism. 
