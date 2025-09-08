@@ -28,7 +28,8 @@ class ArgParser(argparse.ArgumentParser):
                           type=str,
                           required=False,
                           dest='script_path',
-                          help='Absolute path to simulation script angiogenesis-simulation.js')
+                          default = "src/angiogenesis-test1.js",
+                          help='simulation script')
 
 		self.add_argument('-j', '--max_proc',
                           type=str,
@@ -42,11 +43,24 @@ class ArgParser(argparse.ArgumentParser):
                           dest='nsim',
                           help='number of simulation replicates per parameter combination')        
 
+		self.add_argument('-o', '--out',
+                          type=str,
+                          required=False,
+                          dest='out_path',
+                          default="output/test1/artistoo-test1.csv",
+                          help='Path to output csv')
+
+
 		self.parsed_args = self.parse_args()
         
 	@property
 	def script_path(self):
 		return f'{os.getcwd()}/{self.parsed_args.script_path}'
+
+	@property
+	def out_path(self):
+		return f'{os.getcwd()}/{self.parsed_args.out_path}'
+
 
 	@property
 	def max_proc(self) -> int:
@@ -65,6 +79,7 @@ class ArgParser(argparse.ArgumentParser):
 	def kwargs(self):
 		return dict(
 			script=self.script_path,
+			out=self.out_path,
 			nsim = self.nsim,
 			max_proc=self.max_proc
 		)
@@ -82,7 +97,7 @@ def run_node(seed) :
 
 	argString = " -x " + str(seed) + " > " + "output/test1/tracks" + "/track" + str(seed) +".csv" 
 	#print(script + " " + argString)
-	success = execute_js("src/angiogenesis-test1.js", argString ) #execute_js(args['script'], argString )
+	success = execute_js(args["script"], argString ) #execute_js(args['script'], argString )
 	if success:
 		pass
 	else:
@@ -129,7 +144,7 @@ if __name__ == '__main__':
         	pbar.update()
         	pbar.refresh()
     out = merge_all()
-    out_name = "output/test1/artistoo-test1.csv"
+    out_name = args['out']
     out.to_csv(out_name, index=False) 
     print( " Done!")
  

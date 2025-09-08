@@ -1,0 +1,16 @@
+{
+	"data" : [
+		{
+			"name" : "Artistoo\n(baseline)",
+			"desc" : "Artistoo implementation of unit test 1",
+			"file" : "testdata/artistoo-test1.csv",
+			"color" : "#c61675"
+		},
+		{
+			"name" : "Artistoo\n(Moore)",
+			"desc" : "Adapted Artistoo implementation with Moore neighborhoods instead of order 1 for Metropolis and order 4 for surface. This is meant to demonstrate the test can pick this up.",
+			"file" : "testdata/artistooB-test1.csv",
+			"color" : "#ff8c00"
+		}
+	]
+}
