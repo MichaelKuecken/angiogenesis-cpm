@@ -279,15 +279,26 @@ See : https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/com
 
 **Changes wrt the original simulation**
 
-TBD
+- *CPM initialization* : seed 9 cells as 7 x 7 pixel squares with bottom left corners at:
+  (93,93), (100,93), (107,93), (100,93), (100,100), (100,107), (107,93), (107,100), (107,107)
+- *Disable PDE*: ... by setting $\alpha = \epsilon = D = 0$ ensuring that $c(p)=0$ at every time for all $p$ (and not running the PDE update for speed)
+- *Repeats*: 100 independent simulations
 
 **Output format**
+Output is similar as for test 1, but we now **focus only on the cell that was seeded in the middle**.
+Instead of binary image at $t = 500 MCS$, output the following data for $t = 10, 20, ... , 490, 500$, collected for all simulation repeats, in csv format with the following columns:
 
-TBD
+      - `time` : elapsed time in MCS
+      - `rep` : ID of the simulation replicate
+      - `com_1` : x coordinate of the middle cell's center of mass
+      - `com_2` : y coordinate of the middle cell's center of mass
+      - `area` : the current area in number of pixels of the middle cell
+      - `surface` : the current perimeter of the middle cell, computed as in doi: 10.1186/s13628-015-0022-x Figure 4 with neighborhood order 4 (same as for adhesion energy)
+
 
 **Comparative analysis**
 
-TBD
+As for test 1.
 
 ## Test 3 : PDE basics
 
