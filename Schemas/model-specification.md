@@ -302,7 +302,7 @@ Instead of binary image at $t = 500 MCS$, output the following data for $t = 10,
 
 **Comparative analysis**
 
-As for test 1.
+As for test 1; see: https://github.com/MichaelKuecken/angiogenesis-cpm/blob/main/UnitTests/comparison/test2/README.md.
 
 ## Test 3 : PDE basics
 
