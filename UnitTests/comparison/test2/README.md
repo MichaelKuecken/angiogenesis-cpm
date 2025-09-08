@@ -1,6 +1,6 @@
 # Comparison for Unit Test 2
 
-Standardized script(s) for comparing outputs for unit test 1. For now, just visually
+Standardized script(s) for comparing outputs for unit test 2. For now, just visually
 compare relevant metrics; formal statistical analysis and equivalence testing 
 will be added later.
 
