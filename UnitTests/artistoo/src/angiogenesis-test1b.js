@@ -165,6 +165,17 @@ class Adhesion2 extends CPM.Adhesion {
 		}
 		return r
 	}
+	// same but not scaled by J, just count the surface in number of pixels
+	surf( i, tp ) {
+		let r = 0, tn
+		/* eslint-disable */
+		const N = this.neighi( i )
+		for( let j = 0 ; j < N.length ; j ++ ){
+			tn = this.C.pixti( N[j] )
+			if( tn != tp ) r += 1
+		}
+		return r
+	}
 }
 
 
@@ -290,11 +301,21 @@ function drawCanvas(){
 function logStats(){
 	
 	let tt = this.time + 1
+	
+	
 
 	if( tt % 10 == 0 ){
 		let thecentroid = this.C.getStat( CPM.CentroidsWithTorusCorrection )[1]
 		let currentvolume = this.C.getVolume(1)
-		console.log( tt + "," + seed + "," + thecentroid.join(",") + "," + currentvolume )
+			const adh = sim.C.getConstraint( "Adhesion2" )
+		const pix = sim.C.getStat( CPM.PixelsByCell ) [1]
+		let perim = 0
+		for( let p of pix ){
+			perim += adh.surf( this.C.grid.p2i( p ),1 )
+		}
+
+
+		console.log( tt + "," + seed + "," + thecentroid.join(",") + "," + currentvolume + "," + perim)
 
 	}
 				
@@ -331,6 +352,6 @@ sim.C.add( new ChemotaxisConstraintCI( chem_config 	) )
 
 sim.seedCells()
 
-console.log( "time,rep,com_1,com_2,area")
+console.log( "time,rep,com_1,com_2,area,surface")
 
 sim.run()

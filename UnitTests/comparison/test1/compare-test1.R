@@ -61,11 +61,16 @@ pY <- ggplot( dsumm, aes( x = time, color = implementation ) ) +
 	labs( x = "time (MCS)", y = "y-coordinate" ) +
 	mytheme
 
-# Plot area distribution
+# Plot area and surface distribution
 pArea <- ggplot( dall, aes( x = implementation, y = area, color = implementation ) ) + 
 	geom_quasirandom( size = .2, show.legend=FALSE ) +
 	scale_color_manual( values = cmap ) +
 	labs( x = NULL, y = "area (pixels)" ) +
+	mytheme
+pSurface <- ggplot( dall, aes( x = implementation, y = surface, color = implementation ) ) + 
+	geom_quasirandom( size = .2, show.legend=FALSE ) +
+	scale_color_manual( values = cmap ) +
+	labs( x = NULL, y = "surface" ) +
 	mytheme
 
 # Plot inst speed distribution
@@ -99,11 +104,11 @@ pMSD <- ggplot( msdData, aes( x = dt, y = value , color = implementation ) ) +
 	theme( legend.position = c(1,0),legend.justification=c(1,0), legend.background = element_blank())
 
 
-p <- ( pTracks ) / (pX + pY ) /  (pMSD ) / ( pArea + pSpeed ) + plot_annotation( tag_level = 'A')
+p <- ( pTracks ) / (pX + pY ) /  (pMSD ) / ( pArea + pSpeed + pSurface ) + plot_annotation( tag_level = 'A')
 
 N <- length( inJSON$data )
 
-w <- 1 + N * 3.5
+w <- 2 + N * 4.5
 h <- 1 + N * 7
 
 ggsave( p, file = "test1-comparison.pdf", width = w, height = h, units="cm", useDingbats = FALSE )
