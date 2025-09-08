@@ -252,7 +252,7 @@ We run the simulation for 500 MCS and output the CPM grid as a binary image at t
 **Changes wrt the original simulation**
 Everything else stays the same as above.
 
-- *CPM initialization*: seed one EC as a single pixel in the middle of the grid instead of seeding 400 ECs in a 20 x 20 grid.
+- *CPM initialization*: seed one EC as a single pixel in the middle of the grid.
 - *Disable PDE*: ... by setting $\alpha = \epsilon = D = 0$ ensuring that $c(p)=0$ at every time for all $p$ (and not running the PDE update for speed)
 - *Repeats*: 100 independent simulations
 
@@ -264,6 +264,7 @@ Instead of binary image at $t = 500 MCS$, output the following data for $t = 10,
       - `com_1` : x coordinate of the cell's center of mass
       - `com_2` : y coordinate of the cell's center of mass
       - `area` : the current cell area in number of pixels
+      - `surface` : the current perimeter of the middle cell, computed as in doi: 10.1186/s13628-015-0022-x Figure 4 with neighborhood order 4 (same as for adhesion energy)
 
 
 **Comparative analysis**
@@ -277,15 +278,18 @@ See : https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/com
 
 **Goal** Test for differences in cell-cell interaction (e.g. through the cell-cell adhesion term).
 
+<img width="30%" align="right" alt="image" src="https://github.com/user-attachments/assets/2b1a5af8-bbfc-4736-8d00-49d3868d787e" />
+
+
 **Changes wrt the original simulation**
 
-- *CPM initialization* : seed 9 cells as 7 x 7 pixel squares with bottom left corners at:
+- *CPM initialization* : see image on the right -- seed 9 cells as 7 x 7 pixel squares with bottom left corners at:
   (93,93), (100,93), (107,93), (100,93), (100,100), (100,107), (107,93), (107,100), (107,107)
 - *Disable PDE*: ... by setting $\alpha = \epsilon = D = 0$ ensuring that $c(p)=0$ at every time for all $p$ (and not running the PDE update for speed)
 - *Repeats*: 100 independent simulations
 
 **Output format**
-Output is similar as for test 1, but we now **focus only on the cell that was seeded in the middle**.
+Output is similar as for test 1, but we now **focus only on the cell that was seeded in the middle** (see CPM initialization above).
 Instead of binary image at $t = 500 MCS$, output the following data for $t = 10, 20, ... , 490, 500$, collected for all simulation repeats, in csv format with the following columns:
 
       - `time` : elapsed time in MCS
