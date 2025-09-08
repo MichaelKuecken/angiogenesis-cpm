@@ -10,6 +10,7 @@ will be added later.
 
 For the specification of the test itself and the required output format: see 
 (https://github.com/MichaelKuecken/angiogenesis-cpm/blob/main/Schemas/model-specification.md)[https://github.com/MichaelKuecken/angiogenesis-cpm/blob/main/Schemas/model-specification.md]
+
 (bottom of the page).
 
 ## Setup
