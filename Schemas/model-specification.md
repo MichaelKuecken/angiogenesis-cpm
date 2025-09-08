@@ -271,6 +271,8 @@ The output csvs of each implementation will be compared in downstream analysis o
 - motility of the center of mass (displacement distributions over time)
 - area distributions over time
 
+See : https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test1.
+
 ## Test 2 : multi-cell CPM dynamics without PDE
 
 **Goal** Test for differences in cell-cell interaction (e.g. through the cell-cell adhesion term).
