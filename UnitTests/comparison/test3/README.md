@@ -23,7 +23,7 @@ conda activate angio-unit-analysis
 
 ### Manual install
 
-Ensure you have R installed with packages:
+Alternatively, if not using conda, ensure you have R installed with packages:
 
   - jsonlite
   - patchwork
