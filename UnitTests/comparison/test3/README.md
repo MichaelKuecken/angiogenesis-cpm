@@ -1,8 +1,7 @@
 # Comparison for Unit Test 3
 
-Standardized script(s) for comparing outputs for unit test 1. For now, just visually
-compare relevant metrics; formal statistical analysis and equivalence testing 
-will be added later.
+Standardized script(s) for comparing outputs for unit test 3. For now, just compare the concentration at 
+one coordinate (this should already indicate any difference). We can extend later if necessary.
 
 
 
@@ -24,7 +23,7 @@ conda activate angio-unit-analysis
 
 ### Manual install
 
-Ensure you have R installed with packages:
+Alternatively, if not using conda, ensure you have R installed with packages:
 
   - jsonlite
   - patchwork
