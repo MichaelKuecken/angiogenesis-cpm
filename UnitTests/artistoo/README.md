@@ -3,9 +3,13 @@
 Tests currently implemented : 
 
 - [x] Test 1 (single CPM cell, no chemokine)
-- [ ] Test 2 (multiple CPM cells, no chemokine)
+- [x] Test 2 (multiple CPM cells, no chemokine)
 - [x] Test 3 (PDE with no CPM cells)
-- [ ] Test 4 (Secretion, coupling PDE with a single but fixed CPM cell)
+- [x] Test 4 (PDE with no CPM cells and no diffusion)
+- [x] Test 5 (coupling PDE with a single but fixed CPM cell)
+
+Note: test 3 and 4 differ only in the value of the diffusion coefficient, so they use
+the same script.
 
 ## Quick start (using conda)
 
