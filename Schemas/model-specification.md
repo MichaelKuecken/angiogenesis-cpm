@@ -339,29 +339,53 @@ After collecting these csv's from all implementations, we will compare the conce
 
 See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test3 for an example and instructions.
 
-## Test 4 : secretion
+## Test 4 : PDE without diffusion
+
+**Goal** test for differences in the PDE solving with an even simpler PDE without diffusion. This modifies test3. 
+
+**Changes wrt the original simulation**
+
+Everything exactly as in test 3 (PDE basics), except we now also set $D = 0$. 
+
+**Output format**
+
+As test 3: in csv format, output the chemokine concentration $c(p)$ at $p = (80,80)$ over time; use the following columns:
+
+      - `time` : elapsed time in MCS (record at $t = 10, 20, ... , 490, 500$)
+      - `conc` : corresponding amount of chemokine at $p = (80,80)$
+
+**Comparative analysis**
+
+As test3: after collecting these csv's from all implementations, we will compare the concentration - time curves directly. 
+
+See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test3 for an example and instructions.
+
+
+## Test 5 : secretion
 
 **Goal** test for differences in the chemokine secretion mechanism. 
 
 **Changes wrt the original simulation**
 
-We simulate in two phases:
+- *Cell seeding*: we seed a single CPM cell at specific positions which are the result of running Test 1 for 100 MCS to equilibrium and are (49 pixels total):
 
-First initialize the CPM by changing from the original simulation:
+```
+[ [97,99],[97,100],[97,101],[97,102],[98,98],[98,99],[98,100],[98,101],[98,102],[98,103],[99,98],[99,99],[99,100],[99,101],[99,102],[99,103],[100,98],[100,99],[100,100],[100,101],[100,102],[100,103],[100,104],[101,98],[101,99],[101,100],[101,101],[101,102],[101,103],[101,104],[102,98],[102,99],[102,100],[102,101],[102,102],[102,103],[102,104],[103,98],[103,99],[103,100],[103,101],[103,102],[103,103],[103,104],[104,99],[104,100],[104,101],[104,102],[104,103] ]
+```
 
-- *CPM initialization*: seed one EC as a single pixel in the middle of the grid instead of seeding 400 ECs in a 20 x 20 grid.
-- *Disable PDE*: ... by setting $\alpha = \epsilon = D = 0$ ensuring that $c(p)=0$ at every time for all $p$.
-
-After 10 MCS :
-
-- *Freeze CPM* : stop performing updates on the CPM
-- *Restart PDE* : ... by setting $\alpha, \epsilon, D$ back to the original values as described in the full model specification
+- *Freeze CPM* : we don't perform updates on the CPM
+- *Repeats*: 1 simulation only (this is deterministic)
 
 **Output format**
 
-TBD
+Same as test 3: in csv format, output the chemokine concentration $c(p)$ at $p = (80,80)$ over time; use the following columns:
 
+      - `time` : elapsed time in MCS (record at $t = 10, 20, ... , 490, 500$)
+      - `conc` : corresponding amount of chemokine at $p = (80,80)$
+      
 **Comparative analysis**
 
-TBD
+As test3: after collecting these csv's from all implementations, we will compare the concentration - time curves directly. 
+
+See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test3 for an example and instructions.
 
