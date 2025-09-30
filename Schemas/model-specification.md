@@ -358,7 +358,7 @@ Similar to test 3 but at different position: in csv format, output the chemokine
 
 As test3: after collecting these csv's from all implementations, we will compare the concentration - time curves directly. 
 
-See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test3 for an example and instructions.
+See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test4 for an example and instructions.
 
 
 ## Test 5 : secretion
@@ -387,5 +387,5 @@ Same as test 3: in csv format, output the chemokine concentration $c(p)$ at $p =
 
 As test3: after collecting these csv's from all implementations, we will compare the concentration - time curves directly. 
 
-See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test3 for an example and instructions.
+See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test5 for an example and instructions.
 
