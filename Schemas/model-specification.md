@@ -349,10 +349,10 @@ Everything exactly as in test 3 (PDE basics), except we now also set $D = 0$.
 
 **Output format**
 
-As test 3: in csv format, output the chemokine concentration $c(p)$ at $p = (80,80)$ over time; use the following columns:
+Similar to test 3 but at different position: in csv format, output the chemokine concentration $c(p)$ at $p = (100,100)$ over time; use the following columns:
 
       - `time` : elapsed time in MCS (record at $t = 10, 20, ... , 490, 500$)
-      - `conc` : corresponding amount of chemokine at $p = (80,80)$
+      - `conc` : corresponding amount of chemokine at $p = (100,100)$
 
 **Comparative analysis**
 
