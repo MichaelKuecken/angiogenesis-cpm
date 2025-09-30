@@ -18,7 +18,7 @@ class ArgParser(argparse.ArgumentParser):
                           type=str,
                           required=False,
                           dest='script_path',
-                          default = "src/angiogenesis-test3.js", # same script as test 3, just -D 0 flag to set diffusion to zero.
+                          default = "src/angiogenesis-test4.js", 
                           help='simulation script')
 
 		self.add_argument('-o', '--out',
@@ -56,7 +56,7 @@ args = ArgParser().kwargs
 """
 def run_node() :
 
-	argString = " -D 0 > " + args['out']
+	argString = " > " + args['out']
 	#print(script + " " + argString)
 	success = execute_js(args['script'], argString ) #execute_js(args['script'], argString )
 	if success:

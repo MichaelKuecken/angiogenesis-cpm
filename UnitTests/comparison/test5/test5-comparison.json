@@ -1,0 +1,16 @@
+{
+	"data" : [
+		{
+			"name" : "Artistoo\n(baseline)",
+			"desc" : "Artistoo implementation of unit test 5",
+			"file" : "testdata/artistoo-test5.csv",
+			"color" : "#c61675"
+		},
+		{
+			"name" : "Artistoo\n(single pixel source)",
+			"desc" : "Data from test3",
+			"file" : "../test3/testdata/artistoo-test3.csv",
+			"color" : "#ff8c00"
+		}
+	]
+}
