@@ -202,7 +202,7 @@ let config = {
 		BURNIN : 0,
 		CELLCOLOR : ["000000"],
 		SAVEIMG : saveImg,
-		IMGFRAMERATE : 500,
+		IMGFRAMERATE : 10,
 		SAVEPATH: imgpath,
 		EXPNAME : expName,
 		zoom : 1,
@@ -247,13 +247,13 @@ function seedCells(){
 // called by postMCSListener after every MCS
 function updateChemokine( D, alpha, epsilon ){
 	
-	this.chemokine.diffusion( D ) 
+	//this.chemokine.diffusion( D ) 
 	let update = this.chemokine._pixels.map( (x,i) => {
 		const p = ( this.C.pixti(i) > 0 ) ? 1 : 0
 		return x + ( alpha * p ) - ( epsilon * x * (1 - p) )
 	})
 	this.chemokine._pixels = update	
-	
+	this.chemokine.diffusion( D ) 
 }
 
 // called after every MCS
@@ -264,7 +264,7 @@ function postMCSListener(){
 	const effectiveDiffusionRate = this.C.conf["D"] / Nd
 	const effectiveAlpha = this.C.conf.alpha / Nd
 	const effectiveEpsilon = this.C.conf.epsilon / Nd
-	for( let i = 0 ; i <= Nd ; i ++ ){
+	for( let i = 0 ; i < Nd ; i ++ ){
 		this.updateChemokine( effectiveDiffusionRate, effectiveAlpha, effectiveEpsilon )	
 	}
 	

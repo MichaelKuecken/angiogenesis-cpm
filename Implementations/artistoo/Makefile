@@ -2,7 +2,7 @@
 .DELETE_ON_ERROR:
 
 MAXPROC=4
-NSIM=10
+NSIM=50
 
 all : .exps/lchem .exps/satcoef .exps/VEGFdecay .exps/Jcc
 
