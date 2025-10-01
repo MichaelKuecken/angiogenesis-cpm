@@ -263,7 +263,7 @@ function postMCSListener(){
 	const effectiveDiffusionRate = this.C.conf["D"] / Nd
 	const effectiveAlpha = this.C.conf.alpha / Nd
 	const effectiveEpsilon = this.C.conf.epsilon / Nd
-	for( let i = 0 ; i <= Nd ; i ++ ){
+	for( let i = 0 ; i < Nd ; i ++ ){
 		this.updateChemokine( effectiveDiffusionRate, effectiveAlpha, effectiveEpsilon )	
 	}
 	

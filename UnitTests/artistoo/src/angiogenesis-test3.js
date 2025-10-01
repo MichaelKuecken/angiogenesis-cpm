@@ -254,7 +254,7 @@ function updateChemokine( D, alpha, epsilon ){
 		return x + ( alpha * p ) - ( epsilon * x * (1 - p) )
 	})
 	this.chemokine._pixels = update	
-	
+	//this.chemokine.diffusion( D ) 
 }
 
 // called after every MCS
@@ -265,7 +265,7 @@ function postMCSListener(){
 	const effectiveDiffusionRate = this.C.conf["D"] / Nd
 	const effectiveAlpha = this.C.conf.alpha / Nd
 	const effectiveEpsilon = this.C.conf.epsilon / Nd
-	for( let i = 0 ; i <= Nd ; i ++ ){
+	for( let i = 0 ; i < Nd ; i ++ ){
 		this.updateChemokine( effectiveDiffusionRate, effectiveAlpha, effectiveEpsilon )	
 	}
 	
