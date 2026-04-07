@@ -247,8 +247,18 @@ function seedCells(){
 // called by postMCSListener after every MCS
 function updateChemokine( D, alpha, epsilon ){
 	
+	/* testing async diffusion
+	for( let xx = 0; xx < this.C.extents[0]; xx ++ ){
+		for( let yy = 0; yy < this.C.extents[1]; yy ++ ){
+			let i = this.chemokine.p2i([xx,yy])
+			this.chemokine._pixels[i] = this.chemokine.pixti( i ) + D * this.chemokine.laplaciani( i )
+		}
+	}*/
+
+
 	this.chemokine.diffusion( D ) 
 	let update = this.chemokine._pixels.map( (x,i) => {
+		
 		const midi = this.C.grid.p2i( [100,100] )
 		const p = ( i == midi ) ? 1 : 0
 		return x + ( alpha * p ) - ( epsilon * x * (1 - p) )
