@@ -5,6 +5,7 @@ MAXPROC=4
 NSIM=50
 
 all : .exps/lchem .exps/satcoef .exps/VEGFdecay .exps/Jcc
+allCC : .exps-CC3D/lchem .exps-CC3D/satcoef .exps-CC3D/VEGFdecay .exps-CC3D/Jcc
 
 node_modules : 
 	npm install
@@ -41,3 +42,5 @@ parms/screen-Jcc.txt : src/makeParamTable.R | parms
 .exps/% : run.py src/angiogenesis-simulation.js parms/screen-%.txt | img node_modules .exps
 	python run.py -s src/angiogenesis-simulation.js -f parms/screen-$*.txt -i img/screen-$* -n $(NSIM) -j $(MAXPROC) && touch $@
 
+.exps-CC3D/% : run.py src/angiogenesis-simulation.js parms/screen-%.txt | img node_modules .exps
+	python run.py -s src/angiogenesis-simulation.js -f parms/screen-$*.txt -i img/screen-$*-CC3D -n $(NSIM) -j $(MAXPROC) -c 1 && touch $@
