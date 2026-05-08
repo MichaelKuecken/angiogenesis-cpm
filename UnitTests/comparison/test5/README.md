@@ -1,6 +1,6 @@
-# Comparison for Unit Test 4
+# Comparison for Unit Test 5
 
-Standardized script(s) for comparing outputs for unit test 4. For now, just compare the concentration at 
+Standardized script(s) for comparing outputs for unit test 5. For now, just compare the concentration at 
 one coordinate (this should already indicate any difference). We can extend later if necessary.
 
 
@@ -36,23 +36,20 @@ Alternatively, if not using conda, ensure you have R installed with packages:
 To add new data to the plot:
 
 - Move the csv file (as specified in the test spec) to "testdata"
-- Add it and descriptive info to `test4-comparison.json`. Fields `name`, `csv` and `color` are required by the plotting script, `desc` is for any description you want to add but is not used.
+- Add it and descriptive info to `test5-comparison.json`. Fields `name`, `csv` and `color` are required by the plotting script, `desc` is for any description you want to add but is not used.
 - Install the correct packages or install and activate the conda environment (see "Setup" above)
 - Run the R script in your favourite IDE or just run:
 
 ```
-Rscript compare-test4.R
+Rscript compare-test5.R
 ```
 
-The new data will appear in `test4-comparison.pdf`.
+The new data will appear in `test5-comparison.pdf`.
 
 ## Example
 
-An example of the output (here I compared the 'normal' Artistoo implementation with one where I deliberately swapped the order of the diffusion vs secretion/decay step, to see that we can spot this in the test):
+An example of the output (here I compared the Artistoo implementation of test 5 (frozen but larger CPM cell secreting chemokine) with that of test 3 (same PDE but the source is a single pixel):
 
-<img width="729" height="333" alt="image" src="https://github.com/user-attachments/assets/e7193ab0-4c96-41a3-9325-3e862ea7086e" />
+<img width="729" height="333" alt="image" src="https://github.com/user-attachments/assets/fde9e531-ec51-4798-80c1-b1da3dd889fe" />
 
 
-<b>A</b> Concentration over time at the output position (80,80). <b>B</b> Idem,  but now expressed as fold-change with respect
-to the implementation indicated with "REF". 
- 
