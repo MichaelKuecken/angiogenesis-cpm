@@ -11,10 +11,10 @@ colormap <- c( "Artistoo" = "#84b8e0", "Morpheus" = "#360568", "CC3D" = "#E4C1F9
 
 inFile <- argv[1]
 scanparm <- argv[2]
-outFile <- argv[3]
+comparisons <- unlist( strsplit( argv[3], " " ))
+outFile <- argv[4]
 
-dd <- read.csv( inFile ) %>%
-	mutate( framework = platform ) 
+dd <- read.csv( inFile ) %>% filter( is.element( framework, comparisons ) ) 
 
 if( scanparm == "cellcell" ){
 	
@@ -34,7 +34,7 @@ if( scanparm == "cellcell" ){
 
 } else if ( scanparm == "satstrength" ) {
 
-	dd$value <- dd$saturation
+	dd$value <- ifelse( dd$platform == "Morpheus", dd$lchem, dd$saturation )
 	annotations <- seq( 0, .6, by = .15 )
 	jit <- 0.01
 	xlab <- "saturation coefficient"
@@ -53,13 +53,13 @@ if( scanparm == "cellcell" ){
 }
 
 dsum <- dd %>%
-	group_by( framework, value ) %>%
-	summarise( N = mean(N) )
+	group_by( framework, platform, value ) %>%
+	summarise( N = mean(N, na.rm=TRUE) )
  
 
 ann <- data.frame( value2 = annotations )
 
-p <- ggplot( dd, aes( x = value + jit*( as.numeric( as.factor( framework ) ) -2 ), y = N, color = framework ) ) +
+p <- ggplot( dd, aes( x = value + jit*( as.numeric( as.factor( framework ) ) -2 ), y = N, color = platform ) ) +
 	geom_line( data=dsum, alpha = .5 ) +
 	geom_jitter( height = 0, width = jit/2, size = .5 ) +
 	geom_vline( data = ann, aes( xintercept= value2 ), linewidth = 0.2, color = "gray", lty =2 )+
@@ -104,41 +104,42 @@ change_cols = function( outcol, theimg) {
     return(theimg)
 }
 
+print(annotations)
 
-pngs <- sapply( annotations,function(lc){
-	ff <- dd %>% filter( platform == "Artistoo", near( value , lc ) ) %>% dplyr::select(file) %>% head(1)
-	return( paste0( "compare_multipleruns/Artistoo/",scanparm,"_scan/",ff$file[1] ) )
+pngList <- lapply( comparisons, function( fri ) {
+	di <- dd %>% filter( framework == fri )
+	pli <- di$platform[1]
+	pngi <- sapply( annotations, function(v){
+		fi <- di %>% filter( near( value, v ) )  %>% dplyr::select(file) %>% head(1)
+		fi <- gsub( "angiogenesisSync", "angiogenesis-sync", fi$file[1] )
+		fi <- gsub( "angiogenesisCC3D", "angiogenesis-CC3D", fi )
+		return( paste0( "compare_multipleruns/", fri, "/", scanparm,"_scan/",fi ) )
+	})
+	return (list( platform = pli, png = pngi ))
 })
 
-pngsM <- sapply( annotations,function(e){
-	ff <- dd %>% filter( platform == "Morpheus", near( value, e ) ) %>% dplyr::select(file) %>% head(1)
-	return( paste0( "compare_multipleruns/Morpheus/",scanparm,"_scan/",ff$file[1] ) )
-} )
-pngsCC <- sapply( annotations,function(e){	
-	ff <- dd %>% filter( platform == "CC3D", near( value , e ) ) %>% dplyr::select(file) %>% head(1)
-	return( paste0( "compare_multipleruns/CC3D/",scanparm,"_scan/",ff$file[1] ) )
-} )
+pngList2 <- lapply( pngList, function(x){
+	lapply( x$png, getPNG, colormap[[x$platform]])
+})
+
+list1 <- unlist( pngList2, recursive = FALSE ) 
 
 
-listA <- lapply( pngs, getPNG, colormap[["Artistoo"]])
-listCC <- lapply( pngsCC, getPNG, colormap[["CC3D"]])
-listM <- lapply( pngsM, getPNG, colormap[["Morpheus"]])
+m <- length(pngList2) # number of frameworks (rows to display)
+n <- length(pngList2[[1]]) # number of annotation patches to show per framework
+# auto generate the "design matrix" for the patchwork layout based on m and n
+letters_needed <- LETTERS[1:(m * n)]
+top_mat <- matrix( letters_needed, nrow = m, ncol = n, byrow = TRUE ) # m x n grid part
+design_mat <- rbind( top_mat, matrix(LETTERS[m * n + 1], nrow = 1, ncol = n))
+design <- paste( apply(design_mat, 1, paste0, collapse = ""), collapse = "\n" )
+heights <- c(rep(0.2, m), 1)
 
-list1 <- c( listA, listM, listCC )# lapply( c(pngs,pngs2,pngsCC), getPNG )
-#list2 <- lapply( 1:length(annotations), function(x) return( ggplot() + coord_fixed() ) )
-
-design <- "ABCDEFG
-		   HIJKLMN
-		   OOOOOOO"
-
-design <- "ABCDE
-		   FGHIJ
-		   KLMNO
-		   PPPPP
-		   PPPPP"
+# final patchwork
+out <- wrap_plots( c(list1, list(p)), design = design ) + plot_layout(heights = heights)
 
 
-#out <- wrap_plots( c( list1 , list(p)), design = design )
-out <- wrap_plots( c( list1 , list(p)), design = design ) + plot_layout( heights=c(0.2, 0.2, 0.2, 1 ) )
 
-ggsave( outFile, width = 9, height = 12, units = "cm", useDingbats = FALSE )
+ph <- 1 + m * 0.2
+
+
+ggsave( outFile, width = 9, height = ph * 7.5, units = "cm", useDingbats = FALSE )

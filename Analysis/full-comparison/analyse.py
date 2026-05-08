@@ -94,7 +94,7 @@ outFile = args['out_csv']
 
 
 
-minRegionSizes = (0,10)
+minRegionSizes = (10,)
 
 
 def run_analysis( f ) :

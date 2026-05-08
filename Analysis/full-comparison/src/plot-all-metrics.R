@@ -10,8 +10,7 @@ inFile <- argv[1]
 scanparm <- argv[2]
 outFile <- argv[3]
 
-dd <- read.csv( inFile ) %>%
-	mutate( framework = platform ) 
+dd <- read.csv( inFile ) 
 
 if( scanparm == "cellcell" ){
 	
@@ -31,7 +30,8 @@ if( scanparm == "cellcell" ){
 
 } else if ( scanparm == "satstrength" ) {
 
-	dd$value <- dd$saturation
+	#dd$value <- dd$saturation
+	dd$value <- ifelse( dd$framework == "MorpheusOrig", dd$lchem, dd$saturation )
 	annotations <- seq( 0, .6, by = .15 )
 	jit <- 0.01
 	xlab <- "saturation coefficient"
@@ -77,7 +77,7 @@ plotMetric <- function( dd, scanparm , metric, show.legend = FALSE ){
 		geom_jitter( height = 0, width = jit/2, size = .5 , show.legend = show.legend ) +
 		geom_vline( data = ann, aes( xintercept= value2 ), linewidth = 0.2, color = "gray", lty =2 )+
 		labs( x = xlab ,  y = metric, color = NULL ) +
-		scale_color_manual( values = colormap ) +
+		#scale_color_manual( values = colormap ) +
 		scale_x_continuous( breaks = unique(c(0, annotations) )  ) +
 		theme_bw() +
 		theme(

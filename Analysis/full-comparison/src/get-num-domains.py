@@ -39,7 +39,10 @@ def distance_from_uniform(seq): # measure how much a distribution differs from a
     avg = summe/len(seq)
     absdevarray = abs(array-avg)
     summe2 = sum(absdevarray)
-    return summe2/summe
+    if summe > 0 :
+    	return summe2/summe
+    else:
+    	return np.nan
     
 def analyze_image(image):
 
