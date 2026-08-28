@@ -1,6 +1,7 @@
 let CPM = require("./artistoo-cjs.js")
 const fs = require("fs")
 const args = require('minimist')(process.argv.slice(2));
+const { ChemotaxisConstraintCI, CustomGrid, Adhesion2 } = require("./custom-classes.js")
 
 
 function getInput( name, defaultValue, type = undefined ){
@@ -26,6 +27,7 @@ const a = getInput( "a", 0.3, "float" )
 const e = getInput( "e", 0.3, "float" )
 const s = getInput( "s", 0.1, "float" )
 const mu = getInput( "m", 500, "int" )
+const Nd = getInput( "N", 10, "int" ) // number of diffusion substeps per MCS
 const mode = getInput( "c", "Sync", "string" ) 
 	// mode can be "Orig" (original simulation), "CC3D" (mimic cc3d operators splitting),
 	// "Sync" (diffusion/decay/secretion all simultanaeous), or "Morpheus" (mimic original Morpheus)
@@ -37,142 +39,7 @@ const saveImg = true
 let expName = "angiogenesis" + mode + "-Temp" + T + "-Jcm" + Jcm + "-Jcc" + Jcc + "-D" + D + "-prod" + a + "-decay" + e + "-sat" + s + "-lchem" + mu + "-seed" + seed
 
 fs.mkdirSync(imgpath, { recursive: true })
-//console.log(imgpath + "/" + expName ) 
-
-
-
-
-
-
-/* custom classes*/
-
-
-// make contact-inhibited chemotaxis and add the saturation parameter
-class ChemotaxisConstraintCI extends CPM.ChemotaxisConstraint {
-	
-	//concDiff( tp, ts ) {
-	concDiff( targeti, sourcei ) {	
-	
-		let ct = this.field.pixti( targeti )
-		let cs = this.field.pixti( sourcei ) 
-		let saturation_coefficient = this.parameters["s"]
-		
-		//return 0
-		
-		let out = ( ( ct / (1.0+saturation_coefficient*ct )) - (cs / (1.0+saturation_coefficient*cs ) ) )
-		return out
-	}
-	
-	deltaH( sourcei, targeti, src_type, tgt_type ) {
-
-		let lambdachem = this.cellParameter("LAMBDA_CH", src_type )
-		let l1 = lambdachem
-		if( this.parameters["retract"]){
-			if( src_type == 0 ) lambdachem = this.cellParameter("LAMBDA_CH", tgt_type )
-		}
-		if( src_type != 0 & tgt_type != 0 ){
-			lambdachem = lambdachem * this.parameters["X"]
-		}
-		
-		if( lambdachem == 0 ) return 0 
-		let delta = this.concDiff( targeti, sourcei )
-		let out = -delta*lambdachem
-		/*if( Math.random() < 0.0005 ){
-			if( delta > 0 ) console.log( "dc = " + delta + "; lambda = " + l1 + "; dH = " + out)
-		} */
-		return -delta*lambdachem
-	}
-	
-}
-
-// more than standard neighborhood options
-class CustomGrid extends CPM.Grid2D{
-	constructor( extents, torus, defaultorder = 2 ){
-		super( extents, torus )
-		this.order = defaultorder
-	}
-	
-	t(i){
-		let t = i - 1 
-		if( this.torus[1] && ( i % this.X_STEP === 0 ) ){
-			t += this.extents[1]
-		}
-		return t
-	}
-	b(i){
-		let b = i + 1
-		if( this.torus[1] && ( (i+1-this.extents[1]) % this.X_STEP === 0 ) ){
-			b -= this.extents[1]
-		}
-		return b
-	}
-	l(i){
-		let l = i - this.X_STEP
-		if( this.torus[0] && ( i < this.extents[1] ) ) {
-			l += ( this.extents[0] * this.X_STEP )
-		}
-		return l
-	}
-	r(i){
-		let r = i + this.X_STEP
-		if( this.torus[0] && (  i >= this.X_STEP*( this.extents[0] - 1 ) ) ) {
-			r -= ( this.extents[0] * this.X_STEP )
-		}
-		return r
-	}
-	neighi(i,order = this.order ){
-		let t = this.t(i), b = this.b(i), r = this.r(i), l = this.l(i)
-		if( order == 1 ){
-			return[ l,r,t,b]
-		}
-		
-		let tl = this.l(t), tr = this.r(t), bl = this.l(b), br = this.r(b)
-		if( order == 2 ){
-			return [tl,l,bl,t,b,tr,r,br]
-		}
-		
-		let tt = this.t(t), ll = this.l(l), bb = this.b(b), rr = this.r(r)
-		if( order == 3 ){
-			return [tl,l,bl,t,b,tr,r,br,tt,ll,bb,rr]
-		}
-		
-		let ttl = this.l(tt), ttr = this.r(tt), llt = this.t(ll), llb = this.b(ll),
-			bbl = this.l(bb), bbr = this.r(bb), rrt = this.t(rr), rrb = this.b(rr)
-		if( order == 4 ){
-			return [tl,l,bl,t,b,tr,r,br,tt,ll,bb,rr, ttl, ttr, llt, llb, bbl, bbr, rrt, rrb ]
-		}
-		
-		throw( "Orders >4 not implemented!" )
-	}
-}
-
-// update to use variable order neighborhood
-class Adhesion2 extends CPM.Adhesion {
-
-
-	J( t1, t2 ) {
-		return this.cellParameter("J2", t1)[this.C.cellKind(t2)]
-	}
-	neighi(i){
-		return this.C.grid.neighi(i, this.conf.order)
-	}
-	confChecker(){}
-	
-	H( i, tp ){
-		let r = 0, tn
-		/* eslint-disable */
-		const N = this.neighi( i )
-		for( let j = 0 ; j < N.length ; j ++ ){
-			tn = this.C.pixti( N[j] )
-			if( tn != tp ) r += this.J( tn, tp )
-		}
-		return r
-	}
-}
-
-
-
-
+//console.log(imgpath + "/" + expName )
 
 
 let fieldsize = [200,200] 	// 140,140
@@ -188,7 +55,7 @@ let config = {
 		seed : seed,							
 		T : T,
 		D : D, // 0.75,	// diffusion coefficient in pix^2 / MCS
-		Nd : 10, // execute diffusion in Nd steps/MCS
+		Nd : Nd, // execute diffusion in Nd steps/MCS
 		alpha : a, // 0.3, // secretion rate per MCS
 		epsilon : e, // 0.3, // decay rate per MCS
 		J2: [[0,Jcm], [Jcm,Jcc]],

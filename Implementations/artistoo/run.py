@@ -60,6 +60,12 @@ class ArgParser(argparse.ArgumentParser):
                           dest='cc3d',
                           help='run PDE as per original implementation spec (Orig), as Moprheus, as CC3D, or all synced?')      
 
+		self.add_argument('-N', '--ndiff',
+                          type=str,
+                          default="",
+                          dest='ndiff',
+                          help='number of diffusion substeps per MCS (Nd), passed through to the simulation script')
+
 		self.parsed_args = self.parse_args()
 
 	@property
@@ -87,6 +93,10 @@ class ArgParser(argparse.ArgumentParser):
 		return  self.parsed_args.cc3d
 
 	@property
+	def ndiff(self):
+		return self.parsed_args.ndiff
+
+	@property
 	def image_path(self) -> int:
 		return self.parsed_args.image_path
 
@@ -98,7 +108,8 @@ class ArgParser(argparse.ArgumentParser):
 			fp=self.spec_path,
 			max_proc=self.max_proc,
 			image_path=self.image_path,
-			cc3d=self.cc3d
+			cc3d=self.cc3d,
+			ndiff=self.ndiff
 		)
 
 args = ArgParser().kwargs
@@ -119,7 +130,9 @@ def run_node(parms) :
 		parmString += " -" + pName + " " + str( pValue )
 	
 	parmString += " -c " + args['cc3d']
-	
+	if args['ndiff']:
+		parmString += " -N " + str(args['ndiff'])
+
 	#print( parmString )
 	success = execute_js( args['script'], parmString )
 	if success:

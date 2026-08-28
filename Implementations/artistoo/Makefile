@@ -57,11 +57,11 @@ parms/screen-cellcell.txt : src/makeParamTable.R | parms
 .exps/CC3D-% : run.py src/angiogenesis-simulation.js parms/screen-%.txt | img node_modules .exps
 	python run.py -s src/angiogenesis-simulation.js -f parms/screen-$*.txt -c CC3D -i $(DATADIR)/ArtistooCC3D/$*_scan -n $(NSIM) -j $(MAXPROC) && touch $@
 
-.exps/CC3DN2-% : run.py src/angiogenesis-simulation-N2.js parms/screen-%.txt | img node_modules .exps
-	python run.py -s src/angiogenesis-simulation-N2.js -f parms/screen-$*.txt -c CC3D -i $(DATADIR)/ArtistooCC3DN2/$*_scan -n $(NSIM) -j $(MAXPROC) && touch $@
+.exps/CC3DN2-% : run.py src/angiogenesis-simulation.js parms/screen-%.txt | img node_modules .exps
+	python run.py -s src/angiogenesis-simulation.js -f parms/screen-$*.txt -c CC3D -N 2 -i $(DATADIR)/ArtistooCC3DN2/$*_scan -n $(NSIM) -j $(MAXPROC) && touch $@
 
-.exps/CC3DN5-% : run.py src/angiogenesis-simulation-N5.js parms/screen-%.txt | img node_modules .exps
-	python run.py -s src/angiogenesis-simulation-N5.js -f parms/screen-$*.txt -c CC3D -i $(DATADIR)/ArtistooCC3DN5/$*_scan -n $(NSIM) -j $(MAXPROC) && touch $@
+.exps/CC3DN5-% : run.py src/angiogenesis-simulation.js parms/screen-%.txt | img node_modules .exps
+	python run.py -s src/angiogenesis-simulation.js -f parms/screen-$*.txt -c CC3D -N 5 -i $(DATADIR)/ArtistooCC3DN5/$*_scan -n $(NSIM) -j $(MAXPROC) && touch $@
 
 
 .exps/sync-% : run.py src/angiogenesis-simulation.js parms/screen-%.txt | img node_modules .exps
