@@ -26,13 +26,15 @@ const a = getInput( "a", 0.3, "float" )
 const e = getInput( "e", 0.3, "float" )
 const s = getInput( "s", 0.1, "float" )
 const mu = getInput( "m", 500, "int" )
-const modeCC3D = getInput( "c", 0, "int" )
+const mode = getInput( "c", "Sync", "string" ) 
+	// mode can be "Orig" (original simulation), "CC3D" (mimic cc3d operators splitting),
+	// "Sync" (diffusion/decay/secretion all simultanaeous), or "Morpheus" (mimic original Morpheus)
 const drawGradient = getInput( "g", false, "boolean" )
 const imgpath = getInput( "i", "output/img", "string" )
 
 const saveImg = true
-const mode = ( modeCC3D == 1 ) ? "CC3D" : "sync"
-let expName = "angiogenesis-" + mode + "-Temp" + T + "-Jcm" + Jcm + "-Jcc" + Jcc + "-D" + D + "-prod" + a + "-decay" + e + "-sat" + s + "-lchem" + mu + "-seed" + seed
+
+let expName = "angiogenesis" + mode + "-Temp" + T + "-Jcm" + Jcm + "-Jcc" + Jcc + "-D" + D + "-prod" + a + "-decay" + e + "-sat" + s + "-lchem" + mu + "-seed" + seed
 
 fs.mkdirSync(imgpath, { recursive: true })
 //console.log(imgpath + "/" + expName ) 
@@ -203,7 +205,7 @@ let config = {
 		BURNIN : 0,
 		CELLCOLOR : ["000000"],
 		SAVEIMG : saveImg,
-		IMGFRAMERATE : 10,
+		IMGFRAMERATE : 500,
 		SAVEPATH: imgpath,
 		EXPNAME : expName,
 		zoom : 1,
@@ -248,7 +250,19 @@ function seedCells(){
 // called by postMCSListener after every MCS
 function updateChemokine( D, alpha, epsilon ){
 
-	if( modeCC3D > 0 ){
+	switch(mode) {
+	  case "Orig": {
+	  
+		// originally, this implementation did diffusion, then secretion/decay.
+		this.chemokine.diffusion( D ) 
+        let update = this.chemokine._pixels.map( (x,i) => {
+                const p = ( this.C.pixti(i) > 0 ) ? 1 : 0
+                return x + ( alpha * p ) - ( epsilon * x * (1 - p) )
+        })
+        this.chemokine._pixels = update 
+		break;
+	  }
+	  case "CC3D": {
 		// cc3d does diffusion and decay at the same time first:
 		let update2 = this.chemokine._pixels.map( (x,i) => {
 			
@@ -265,14 +279,32 @@ function updateChemokine( D, alpha, epsilon ){
 			return  x + ( alpha * p )
 		})
 		this.chemokine._pixels = update	
-	} else {
-		let update = this.chemokine._pixels.map( (x,i) => {
+		break;
+		}
+	  case "Sync": {
+	  	// new default is cleaner; all operations are performed simultaneously on cached grid.
+	  	let update = this.chemokine._pixels.map( (x,i) => {
 			const p = ( this.C.pixti(i) > 0 ) ? 1 : 0
 			return x + ( alpha * p ) - ( epsilon * x * (1 - p) ) + D * this.chemokine.laplaciani( i )
 																					
 		})
 		this.chemokine._pixels = update	
+		break;
+		}
+	  case "Morpheus":	{
+		// original morpheus implementation does secretion+decay, then diffusion.
+        let update = this.chemokine._pixels.map( (x,i) => {
+                const p = ( this.C.pixti(i) > 0 ) ? 1 : 0
+                return x + ( alpha * p ) - ( epsilon * x * (1 - p) )
+        })
+        this.chemokine._pixels = update 
+		this.chemokine.diffusion( D ) 
+		break;
+	  }
+	  default:
+		throw( `Unknown mode : ${mode} ; choose Orig, Sync, CC3D, or Morpheus.`)
 	}
+
 	
 	
 	

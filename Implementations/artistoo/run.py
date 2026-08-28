@@ -54,11 +54,11 @@ class ArgParser(argparse.ArgumentParser):
                           dest='nsim',
                           help='number of simulation replicates per parameter combination')        
 
-		self.add_argument('-c', '--as_cc3d',
-                          type=int,
-                          default=0,
+		self.add_argument('-c', '--chemo_mode',
+                          type=str,
+                          default="Sync",
                           dest='cc3d',
-                          help='run PDE in CC3D mode as opposed to all synced?')      
+                          help='run PDE as per original implementation spec (Orig), as Moprheus, as CC3D, or all synced?')      
 
 		self.parsed_args = self.parse_args()
 
@@ -84,7 +84,7 @@ class ArgParser(argparse.ArgumentParser):
 	
 	@property
 	def cc3d(self) -> int:
-		return int( self.parsed_args.cc3d )
+		return  self.parsed_args.cc3d
 
 	@property
 	def image_path(self) -> int:
@@ -118,8 +118,7 @@ def run_node(parms) :
 		pValue = parms[i+1]
 		parmString += " -" + pName + " " + str( pValue )
 	
-	if args['cc3d'] > 0:
-		parmString += " -c 1"
+	parmString += " -c " + args['cc3d']
 	
 	#print( parmString )
 	success = execute_js( args['script'], parmString )
