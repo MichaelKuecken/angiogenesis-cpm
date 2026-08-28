@@ -75,3 +75,73 @@ you will need Python (I have tested on 3.12.2), along with:
 - Naked
 - tqdm
 
+## Additional experiments
+
+Beyond the specified tests above, this implementation supports a few extra
+investigative runs that go beyond `Schemas/model-specification.md`, as examples to 
+feed the comparison analysis or to investigate potential reasons for mismatching 
+unit tests between frameworks. the `Makefile` helps run all of those; see below.
+
+
+### Alternate neighborhood configuration (Test 1 / Test 2)
+
+Tests 1 and 2 can also be run with a non-spec CPM neighborhood configuration
+(`-b` flag), to demonstrate that the unit test can pick up on such
+differences. This also runs automatically with `make all`.
+
+```
+make test1
+make test2
+```
+
+### Operator ordering modes (Test 3 / Test 4 / Test 5)
+
+The chemokine PDE can be updated in one of four ways - `Orig`, `Sync`,
+`CC3D`, or `Morpheus`. `Orig` corresponds to the original Artistoo implementation,
+`Sync` is the new agreed default, and `CC3D` and `Morpheus` were designed to match 
+those framework's defaults respectively.  
+
+```
+make test3
+make test4
+make test5
+```
+
+### Spatial resolution scaling (Test 3)
+
+Test 3 also supports a spatial resolution scaling factor `-f`, which
+rescales the grid, `D`, `Nd`, and `alpha` together (see `src/test3-4.js` for
+the reasoning behind how each parameter scales). This checks that the PDE
+solution is resolution-invariant. Not run as part of `make all` since higher
+scaling factors get heavy fast:
+
+```
+make test3-scaling
+```
+
+### Equal decay comparison (Test 3b)
+
+Test 3 (per spec) exempts the secretion point from decay. `test3b-equaldecay.js`
+instead applies decay everywhere, including at the secretion point. With decay
+applied uniformly, the total chemokine mass follows a simple ODE,
+`dM/dt = alpha - epsilon*M`, with analytical solution
+`M(t) = (alpha/epsilon)*(1 - exp(-epsilon*t))` - so the `mass` column this
+script reports can be compared directly against that analytical solution, as
+a check on the PDE solver itself. Also not run as part of `make all`:
+
+```
+make test3b-equaldecay
+```
+
+### Pure diffusion kernel (Test 4b)
+
+`test4b-onlydiff.js` isolates the diffusion term from Test 3/4's secretion
+and decay dynamics: a single one-time chemokine pulse is placed at the grid
+midpoint before the run starts, with secretion and decay both disabled, so
+it just diffuses outward from that point with nothing else confounding it.
+Not run as part of `make all`:
+
+```
+make test4b-onlydiff
+```
+

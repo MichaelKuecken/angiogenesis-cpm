@@ -28,7 +28,7 @@ class ArgParser(argparse.ArgumentParser):
                           type=str,
                           required=False,
                           dest='script_path',
-                          default = "src/angiogenesis-test1.js",
+                          default = "src/test1.js",
                           help='simulation script')
 
 		self.add_argument('-j', '--max_proc',
@@ -50,9 +50,14 @@ class ArgParser(argparse.ArgumentParser):
                           default="output/test1/artistoo-test1.csv",
                           help='Path to output csv')
 
+		self.add_argument('-b', '--altnbh',
+                          action='store_true',
+                          dest='altnbh',
+                          help='use the alternate (non-spec) neighborhood configuration')
+
 
 		self.parsed_args = self.parse_args()
-        
+
 	@property
 	def script_path(self):
 		return f'{os.getcwd()}/{self.parsed_args.script_path}'
@@ -66,13 +71,17 @@ class ArgParser(argparse.ArgumentParser):
 	def max_proc(self) -> int:
 		value = int( self.parsed_args.max_proc )
 		np = mp.cpu_count()
-		if value > np : 
+		if value > np :
 			value = np
 		return value
-		
+
 	@property
 	def nsim(self) -> int:
 		return int( self.parsed_args.nsim )
+
+	@property
+	def altnbh(self) -> bool:
+		return self.parsed_args.altnbh
 
 
 	@property
@@ -81,7 +90,8 @@ class ArgParser(argparse.ArgumentParser):
 			script=self.script_path,
 			out=self.out_path,
 			nsim = self.nsim,
-			max_proc=self.max_proc
+			max_proc=self.max_proc,
+			altnbh=self.altnbh
 		)
 
 args = ArgParser().kwargs
@@ -93,9 +103,11 @@ args = ArgParser().kwargs
 
 """ Function to run the node script for a given replicate / simulation seed
 """
+tracks_dir = "output/test1/tracks-b" if args['altnbh'] else "output/test1/tracks"
+
 def run_node(seed) :
 
-	argString = " -x " + str(seed) + " > " + "output/test1/tracks" + "/track" + str(seed) +".csv" 
+	argString = " -x " + str(seed) + (" -b" if args['altnbh'] else "") + " > " + tracks_dir + "/track" + str(seed) +".csv"
 	#print(script + " " + argString)
 	success = execute_js(args["script"], argString ) #execute_js(args['script'], argString )
 	if success:
@@ -107,7 +119,7 @@ def run_node(seed) :
 """ Parallel computation of the simulation replicates
 """
 def run_all():
-	
+
     with mp.Pool( nProcessors ) as pool:
         result = pool.imap( run_node, theParms.itertuples(name=None), chunksize = 2 )
         output = pd.DataFrame()
@@ -117,10 +129,10 @@ def run_all():
 
 
 def merge_all():
-    source_files = sorted( os.listdir( "output/test1/tracks" ) )
+    source_files = sorted( os.listdir( tracks_dir ) )
     dataframes = []
     for file in source_files:
-        df = pd.read_csv("output/test1/tracks/"+ file) 
+        df = pd.read_csv(tracks_dir + "/" + file)
         dataframes.append(df)
     df_all = pd.concat(dataframes)
     return df_all
@@ -135,7 +147,7 @@ def merge_all():
 if __name__ == '__main__':
     nsim = int( args['nsim'] )
     sims = np.arange( nsim ) + 1
-    os.makedirs( "output/test1/tracks", exist_ok = True )
+    os.makedirs( tracks_dir, exist_ok = True )
     nProcessors = args['max_proc']
     print( ".... Running simulations in parallel with " + str(nProcessors) + " cores; (change using -j [desired_cores])")
     with mp.Pool( nProcessors ) as p, tqdm( total = nsim) as pbar:

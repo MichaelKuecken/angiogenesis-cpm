@@ -18,7 +18,7 @@ class ArgParser(argparse.ArgumentParser):
                           type=str,
                           required=False,
                           dest='script_path',
-                          default = "src/angiogenesis-test3.js",
+                          default = "src/test3-4.js",
                           help='simulation script')
 
 		self.add_argument('-o', '--out',
@@ -28,9 +28,23 @@ class ArgParser(argparse.ArgumentParser):
                           default="output/test3/artistoo-test3.csv",
                           help='Path to output csv')
 
+		self.add_argument('-c', '--mode',
+                          type=str,
+                          required=False,
+                          dest='mode',
+                          default="",
+                          help='chemokine update mode to pass through to the script (Orig, Sync, CC3D, Morpheus)')
+
+		self.add_argument('-f', '--scale',
+                          type=str,
+                          required=False,
+                          dest='scale',
+                          default="",
+                          help='spatial resolution scaling factor to pass through to the script')
+
 
 		self.parsed_args = self.parse_args()
-        
+
 	@property
 	def script_path(self):
 		return f'{os.getcwd()}/{self.parsed_args.script_path}'
@@ -40,10 +54,20 @@ class ArgParser(argparse.ArgumentParser):
 		return f'{os.getcwd()}/{self.parsed_args.out_path}'
 
 	@property
+	def mode(self):
+		return self.parsed_args.mode
+
+	@property
+	def scale(self):
+		return self.parsed_args.scale
+
+	@property
 	def kwargs(self):
 		return dict(
 			script=self.script_path,
-			out=self.out_path
+			out=self.out_path,
+			mode=self.mode,
+			scale=self.scale
 		)
 
 args = ArgParser().kwargs
@@ -56,7 +80,7 @@ args = ArgParser().kwargs
 """
 def run_node() :
 
-	argString = " > " + args['out']
+	argString = (" -c " + args['mode'] if args['mode'] else "") + (" -f " + args['scale'] if args['scale'] else "") + " > " + args['out']
 	#print(script + " " + argString)
 	success = execute_js(args['script'], argString ) #execute_js(args['script'], argString )
 	if success:
@@ -73,7 +97,7 @@ def run_node() :
 
    
 if __name__ == '__main__':
-    os.makedirs( "output/test3", exist_ok = True )
+    os.makedirs( os.path.dirname( args['out'] ), exist_ok = True )
     print( " Running simulation...")
     run_node()
     print( " Done!")

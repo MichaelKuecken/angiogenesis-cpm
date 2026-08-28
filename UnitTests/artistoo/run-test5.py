@@ -18,7 +18,7 @@ class ArgParser(argparse.ArgumentParser):
                           type=str,
                           required=False,
                           dest='script_path',
-                          default = "src/angiogenesis-test5.js",
+                          default = "src/test5.js",
                           help='simulation script')
 
 		self.add_argument('-o', '--out',
@@ -28,9 +28,16 @@ class ArgParser(argparse.ArgumentParser):
                           default="output/test5/artistoo-test5.csv",
                           help='Path to output csv')
 
+		self.add_argument('-c', '--mode',
+                          type=str,
+                          required=False,
+                          dest='mode',
+                          default="",
+                          help='chemokine update mode to pass through to the script (Orig, Sync, CC3D, Morpheus)')
+
 
 		self.parsed_args = self.parse_args()
-        
+
 	@property
 	def script_path(self):
 		return f'{os.getcwd()}/{self.parsed_args.script_path}'
@@ -40,10 +47,15 @@ class ArgParser(argparse.ArgumentParser):
 		return f'{os.getcwd()}/{self.parsed_args.out_path}'
 
 	@property
+	def mode(self):
+		return self.parsed_args.mode
+
+	@property
 	def kwargs(self):
 		return dict(
 			script=self.script_path,
-			out=self.out_path
+			out=self.out_path,
+			mode=self.mode
 		)
 
 args = ArgParser().kwargs
@@ -56,7 +68,7 @@ args = ArgParser().kwargs
 """
 def run_node() :
 
-	argString = " > " + args['out']
+	argString = (" -c " + args['mode'] if args['mode'] else "") + " > " + args['out']
 	#print(script + " " + argString)
 	success = execute_js(args['script'], argString ) #execute_js(args['script'], argString )
 	if success:

@@ -328,14 +328,15 @@ where $p_\text{mid}$ = (100,100) is the grid midpoint.
 
 **Output format**
 
-In csv format, output the chemokine concentration $c(p)$ at $p = (80,80)$ over time; use the following columns:
+In csv format, output the chemokine concentration $c(p)$ at $p = (80,80)$ over time, along with the total chemokine mass (the sum of $c(p)$ over all $p$ in $G_\text{VEGF}$); use the following columns:
 
       - `time` : elapsed time in MCS (record at $t = 10, 20, ... , 490, 500$)
       - `conc` : corresponding amount of chemokine at $p = (80,80)$
+      - `mass` : total chemokine mass on the grid at this time
 
 **Comparative analysis**
 
-After collecting these csv's from all implementations, we will compare the concentration - time curves directly. 
+After collecting these csv's from all implementations, we will compare the concentration - time curves directly, and use the mass column to check that total chemokine mass evolves consistently across implementations (e.g. to help diagnose differences arising from how decay is handled at the secretion point).
 
 See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test3 for an example and instructions.
 
@@ -349,14 +350,15 @@ Everything exactly as in test 3 (PDE basics), except we now also set $D = 0$.
 
 **Output format**
 
-Similar to test 3 but at different position: in csv format, output the chemokine concentration $c(p)$ at $p = (100,100)$ over time; use the following columns:
+Similar to test 3 but at different position: in csv format, output the chemokine concentration $c(p)$ at $p = (100,100)$ over time, along with the total chemokine mass (the sum of $c(p)$ over all $p$ in $G_\text{VEGF}$); use the following columns:
 
       - `time` : elapsed time in MCS (record at $t = 10, 20, ... , 490, 500$)
       - `conc` : corresponding amount of chemokine at $p = (100,100)$
+      - `mass` : total chemokine mass on the grid at this time
 
 **Comparative analysis**
 
-As test3: after collecting these csv's from all implementations, we will compare the concentration - time curves directly. 
+As test3: after collecting these csv's from all implementations, we will compare the concentration - time curves directly, and use the mass column to check that total chemokine mass evolves consistently across implementations.
 
 See: https://github.com/MichaelKuecken/angiogenesis-cpm/tree/main/UnitTests/comparison/test4 for an example and instructions.
 
