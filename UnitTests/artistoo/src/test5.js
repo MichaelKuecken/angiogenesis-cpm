@@ -14,7 +14,9 @@
 */
 
 
-const { buildSimulation } = require("./build-simulation.js")
+const { buildSimulation, getInput } = require("../../../Implementations/artistoo/src/build-simulation.js")
+
+const mode = getInput( "c", "Sync", "string" )
 
 /* OVERRIDES TO BASELINE SIMULATOR: */
 
@@ -57,6 +59,7 @@ function logStats(){
 
 /* CONSTRUCT & RUN */
 const sim = buildSimulation({
+	field_config: { mode },
 	simsettings: {
 		SAVEIMG: false,
 		STATSOUT: { browser: false, node: true }

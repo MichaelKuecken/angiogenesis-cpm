@@ -72,6 +72,25 @@ After that, you still need to install Node.js dependencies as listed in the
 npm install
 ```
 
+#### Artistoo library
+
+The simulation code depends on the [Artistoo](https://github.com/ingewortel/artistoo)
+CPM library, specifically its commonjs build `artistoo-cjs.js`. This file is
+not vendored in this repo (it's ~350KB and rarely changes), so it needs to be
+in `src/artistoo-cjs.js` before running anything.
+
+If you use `make` (see "Quick start" above or the `Makefile`), this happens
+automatically: any target that needs it will fetch it first. If you don't use
+`make`, download it yourself before running any script:
+
+```
+curl -sL https://cdn.jsdelivr.net/gh/ingewortel/artistoo@1.2.0/build/artistoo-cjs.js -o src/artistoo-cjs.js
+```
+
+(or just save that URL to `src/artistoo-cjs.js` via your browser). Note this
+is pinned to a specific tagged release (`1.2.0`) rather than `artistoo@latest`,
+so simulation results stay reproducible regardless of upstream changes.
+
 #### Python
 
 To use the wrapper script that runs multiple simulations and scans over parameters,

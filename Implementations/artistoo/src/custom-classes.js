@@ -124,6 +124,18 @@ class Adhesion2 extends CPM.Adhesion {
 		}
 		return r
 	}
+	// same but not scaled by J, just count the surface in number of pixels
+	// (used for the perimeter output in unit tests 1 and 2)
+	surf( i, tp ) {
+		let r = 0, tn
+		/* eslint-disable */
+		const N = this.neighi( i )
+		for( let j = 0 ; j < N.length ; j ++ ){
+			tn = this.C.pixti( N[j] )
+			if( tn != tp ) r += 1
+		}
+		return r
+	}
 }
 
 module.exports = { ChemotaxisConstraintCI, CustomGrid, Adhesion2 }

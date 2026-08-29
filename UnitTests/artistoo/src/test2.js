@@ -13,8 +13,8 @@
 */
 
 
-const CPM = require("./artistoo-cjs.js")
-const { buildSimulation, getInput } = require("./build-simulation.js")
+const CPM = require("../../../Implementations/artistoo/src/artistoo-cjs.js")
+const { buildSimulation, getInput } = require("../../../Implementations/artistoo/src/build-simulation.js")
 
 const seed = getInput( "x", 1, "int" )
 const altNbh = getInput( "b", false, "boolean" )
@@ -69,8 +69,10 @@ function logStats(){
 
 /* CONSTRUCT & RUN */
 const sim = buildSimulation({
-	params: { D: 0, a: 0, e: 0, Ncell: 9, NbhOrder: altNbh ? { adhesion: 2 } : {} },
+	conf: altNbh ? { seed, NbhOrder: { sampling: 1, adhesion: 2 } } : { seed },
+	field_config: { D: 0, alpha: 0, epsilon: 0 },
 	simsettings: {
+		NRCELLS: [9],
 		SAVEIMG: false,
 		STATSOUT: { browser: false, node: true }
 	},

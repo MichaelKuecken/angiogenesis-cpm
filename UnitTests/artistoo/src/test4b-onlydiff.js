@@ -11,7 +11,7 @@
 */
 
 
-const { buildSimulation, getInput } = require("./build-simulation.js")
+const { buildSimulation, getInput } = require("../../../Implementations/artistoo/src/build-simulation.js")
 
 const D0 = getInput( "D", 0.1, "float" )
 
@@ -43,14 +43,14 @@ function logStats(){
 
 /* CONSTRUCT & RUN */
 const sim = buildSimulation({
-	params: {
-		Ncell: 0,
+	field_config: {
 		D: D0,
-		a: 0,
-		e: 0,
+		alpha: 0,
+		epsilon: 0,
 		Nd: 1
 	},
 	simsettings: {
+		NRCELLS: [0],
 		RUNTIME: 100,
 		SAVEIMG: false,
 		STATSOUT: { browser: false, node: true }

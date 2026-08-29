@@ -27,12 +27,13 @@
 */
 
 
-const { buildSimulation, getInput } = require("./build-simulation.js")
+const { buildSimulation, getInput } = require("../../../Implementations/artistoo/src/build-simulation.js")
 
 const f = getInput( "f", 1, "int" )
 const D0 = getInput( "D", 1.0, "float" )
 const a0 = getInput( "a", 0.3, "float" )
 const p = getInput( "p", 80, "int" )
+const mode = getInput( "c", "Sync", "string" )
 
 /* OVERRIDES TO BASELINE SIMULATOR: */
 
@@ -68,14 +69,15 @@ function logStats(){
 
 /* CONSTRUCT & RUN */
 const sim = buildSimulation({
-	params: {
-		fieldsize: [200*f, 200*f],
-		Ncell: 1,
+	fieldsize: [200*f, 200*f],
+	field_config: {
+		mode,
 		D: D0 * f * f,
-		a: a0 * f * f,
+		alpha: a0 * f * f,
 		Nd: 10 * f * f
 	},
 	simsettings: {
+		NRCELLS: [1],
 		SAVEIMG: false,
 		STATSOUT: { browser: false, node: true }
 	},

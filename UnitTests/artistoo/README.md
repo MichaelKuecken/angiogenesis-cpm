@@ -63,6 +63,14 @@ After that, you still need to install Node.js dependencies as listed in the
 npm install
 ```
 
+#### Artistoo library
+
+`src/build-simulation.js` (and everything built on it) requires the Artistoo
+CPM library from `../../Implementations/artistoo/src/artistoo-cjs.js`, which
+isn't vendored in the repo. `make` fetches it automatically when needed; see
+`Implementations/artistoo/README.md` for the manual-download instructions if
+you're not using `make`.
+
 #### Python
 
 To use the wrapper script that runs multiple simulations and scans over parameters,
