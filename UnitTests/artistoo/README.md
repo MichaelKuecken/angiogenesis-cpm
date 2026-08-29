@@ -29,6 +29,14 @@ Finally, you can (locally) install the required Node.js packages using:
 npm install
 ```
 
+You'll also need the Artistoo CPM library itself, which isn't vendored in this
+repo. Download it into `../../Implementations/artistoo/src/artistoo-cjs.js`
+(the shared location `src/build-simulation.js` requires it from):
+
+```
+curl -sL https://cdn.jsdelivr.net/gh/ingewortel/artistoo@1.2.0/build/artistoo-cjs.js -o ../../Implementations/artistoo/src/artistoo-cjs.js
+```
+
 You are now ready to run a test, e.g.:
 
 ```
@@ -67,9 +75,9 @@ npm install
 
 `src/build-simulation.js` (and everything built on it) requires the Artistoo
 CPM library from `../../Implementations/artistoo/src/artistoo-cjs.js`, which
-isn't vendored in the repo. `make` fetches it automatically when needed; see
-`Implementations/artistoo/README.md` for the manual-download instructions if
-you're not using `make`.
+isn't vendored in the repo. If you use `make`, this happens automatically.
+Otherwise (e.g. "Quick start" above), download it yourself - see there, or
+`Implementations/artistoo/README.md`, for instructions.
 
 #### Python
 

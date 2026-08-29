@@ -20,6 +20,13 @@ Finally, you can (locally) install the required Node.js packages using:
 npm install
 ```
 
+You'll also need the Artistoo CPM library itself, which isn't vendored in this
+repo. Download it into `src/artistoo-cjs.js`:
+
+```
+curl -sL https://cdn.jsdelivr.net/gh/ingewortel/artistoo@1.2.0/build/artistoo-cjs.js -o src/artistoo-cjs.js
+```
+
 You are now ready to go, e.g. to run the scan over parameter $\lambda_\text{chemotaxis}$
 as listed in `parms/screen-lchem.txt` with N=10 replicates and j=4 parallel cores, run:
 
@@ -79,9 +86,9 @@ CPM library, specifically its commonjs build `artistoo-cjs.js`. This file is
 not vendored in this repo (it's ~350KB and rarely changes), so it needs to be
 in `src/artistoo-cjs.js` before running anything.
 
-If you use `make` (see "Quick start" above or the `Makefile`), this happens
-automatically: any target that needs it will fetch it first. If you don't use
-`make`, download it yourself before running any script:
+If you use `make` (see the `Makefile`), this happens automatically: any target
+that needs it will fetch it first. Otherwise (e.g. "Quick start" above),
+download it yourself before running any script:
 
 ```
 curl -sL https://cdn.jsdelivr.net/gh/ingewortel/artistoo@1.2.0/build/artistoo-cjs.js -o src/artistoo-cjs.js
